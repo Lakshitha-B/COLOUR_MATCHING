@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>CuddleColor - Cute Color Matching Game</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    touch-action: none;
+}
+
+body {
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    background: #252642;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    height: 100vh;
+    max-height: 920px;
+    overflow: hidden;
+    background: linear-gradient(
+        180deg,
+        #dff8ff 0%,
+        #efffe9 52%,
+        #fff4d6 100%
+    );
+    box-shadow: 0 0 35px rgba(0,0,0,.35);
+}
+
+/* ---------------- HEADER ---------------- */
+
+#header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 92px;
+    z-index: 20;
+
+    background: rgba(255,255,255,.94);
+    border-bottom: 4px solid rgba(255,255,255,.8);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 18px;
+}
+
+.stat {
+    min-width: 80px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #777;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 900;
+    color: #444;
+}
+
+#score-value {
+    color: #36a852;
+}
+
+#streak-value {
+    color: #ff8a00;
+}
+
+#target-area {
+    position: absolute;
+    top: 105px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 15;
+
+    background: rgba(255,255,255,.92);
+    padding: 10px 25px;
+    border-radius: 30px;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,.12);
+
+    text-align: center;
+    white-space: nowrap;
+}
+
+#target-small {
+    font-size: 13px;
+    color: #777;
+    font-weight: bold;
+}
+
+#target-color {
+    font-size: 27px;
+    font-weight: 900;
+}
+
+/* ---------------- BACKGROUND ---------------- */
+
+.cloud {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,.5);
+    pointer-events: none;
+    animation: cloudFloat 8s ease-in-out infinite;
+}
+
+.cloud1 {
+    width: 80px;
+    height: 80px;
+    left: 5%;
+    top: 18%;
+}
+
+.cloud2 {
+    width: 55px;
+    height: 55px;
+    right: 7%;
+    top: 27%;
+    animation-delay: 2s;
+}
+
+.cloud3 {
+    width: 35px;
+    height: 35px;
+    left: 15%;
+    top: 45%;
+    animation-delay: 4s;
+}
+
+@keyframes cloudFloat {
+    0%,100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-12px);
+    }
+}
+
+/* ---------------- PLAY AREA ---------------- */
+
+#play-area {
+    position: absolute;
+    top: 92px;
+    left: 0;
+    width: 100%;
+    bottom: 205px;
+
+    overflow: hidden;
+    touch-action: none;
+}
+
+/* ---------------- CUTE CHARACTER ---------------- */
+
+#helper {
+    position: absolute;
+    left: 50%;
+    bottom: 215px;
+
+    transform: translateX(-50%);
+
+    width: 82px;
+    height: 82px;
+
+    z-index: 5;
+
+    transition: transform .3s ease;
+}
+
+#helper-body {
+    position: absolute;
+    width: 68px;
+    height: 62px;
+    left: 7px;
+    top: 15px;
+
+    background: #ffb7d5;
+    border-radius: 50% 50% 45% 45%;
+
+    border: 4px solid #fff;
+
+    box-shadow:
+        0 7px 0 #e887ae,
+        0 10px 18px rgba(0,0,0,.12);
+}
+
+.eye {
+    position: absolute;
+    width: 8px;
+    height: 11px;
+    background: #49384d;
+    border-radius: 50%;
+    top: 34px;
+}
+
+.eye.left {
+    left: 25px;
+}
+
+.eye.right {
+    right: 25px;
+}
+
+.mouth {
+    position: absolute;
+    width: 17px;
+    height: 9px;
+    border-bottom: 3px solid #49384d;
+    border-radius: 0 0 20px 20px;
+    left: 25px;
+    top: 48px;
+}
+
+.cheek {
+    position: absolute;
+    width: 12px;
+    height: 7px;
+    background: #ff8fab;
+    border-radius: 50%;
+    top: 49px;
+}
+
+.cheek.left {
+    left: 11px;
+}
+
+.cheek.right {
+    right: 11px;
+}
+
+.ear {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: #ffb7d5;
+    border: 4px solid white;
+    border-radius: 50%;
+    top: 5px;
+}
+
+.ear.left {
+    left: 0;
+}
+
+.ear.right {
+    right: 0;
+}
+
+#helper-message {
+    position: absolute;
+    left: 50%;
+    bottom: -38px;
+    transform: translateX(-50%);
+
+    background: white;
+    color: #555;
+
+    padding: 8px 15px;
+    border-radius: 18px;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    box-shadow: 0 3px 12px rgba(0,0,0,.15);
+
+    white-space: nowrap;
+}
+
+/* ---------------- OBJECT ---------------- */
+
+#object {
+    position: absolute;
+
+    width: 86px;
+    height: 86px;
+
+    z-index: 100;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 28px;
+
+    border: 5px solid white;
+
+    box-shadow:
+        0 8px 0 rgba(0,0,0,.12),
+        0 12px 25px rgba(0,0,0,.15);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+
+    touch-action: none;
+    cursor: grab;
+}
+
+#object.dragging {
+    transform: scale(1.18) rotate(4deg);
+    box-shadow:
+        0 15px 0 rgba(0,0,0,.1),
+        0 20px 35px rgba(0,0,0,.25);
+    cursor: grabbing;
+}
+
+#object-symbol {
+    font-size: 43px;
+    pointer-events: none;
+}
+
+#object-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.face-eye {
+    position: absolute;
+    width: 7px;
+    height: 10px;
+    background: rgba(60,40,60,.8);
+    border-radius: 50%;
+    top: 48px;
+}
+
+.face-eye.left {
+    left: 27px;
+}
+
+.face-eye.right {
+    right: 27px;
+}
+
+.face-mouth {
+    position: absolute;
+    width: 15px;
+    height: 8px;
+    border-bottom: 3px solid rgba(60,40,60,.8);
+    border-radius: 0 0 20px 20px;
+    left: 30px;
+    top: 59px;
+}
+
+/* ---------------- BASKETS ---------------- */
+
+#baskets {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 205px;
+
+    z-index: 30;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+
+    padding: 15px 8px 18px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.1),
+            rgba(255,255,255,.7)
+        );
+
+    border-top: 4px solid rgba(255,255,255,.8);
+}
+
+.basket {
+    position: relative;
+
+    width: 18%;
+    height: 125px;
+
+    border-radius: 22px 22px 32px 32px;
+
+    border: 5px solid white;
+
+    box-shadow:
+        0 8px 0 rgba(0,0,0,.12),
+        0 8px 18px rgba(0,0,0,.12);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+
+    touch-action: none;
+}
+
+.basket::before {
+    content: "";
+    position: absolute;
+
+    width: 78%;
+    height: 23px;
+
+    top: 8px;
+    left: 11%;
+
+    background: rgba(255,255,255,.45);
+
+    border-radius: 15px;
+}
+
+.basket.highlight {
+    transform: translateY(-12px) scale(1.12);
+
+    box-shadow:
+        0 0 0 6px rgba(255,255,255,.75),
+        0 0 25px currentColor,
+        0 13px 0 rgba(0,0,0,.12);
+}
+
+.basket.correct-bounce {
+    animation: basketCorrect .65s ease;
+}
+
+@keyframes basketCorrect {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.22) rotate(-4deg); }
+    60% { transform: scale(.95) rotate(4deg); }
+    100% { transform: scale(1); }
+}
+
+.basket-face {
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    transform: translate(-50%,-50%);
+}
+
+.basket-eye {
+    position: absolute;
+
+    width: 7px;
+    height: 11px;
+
+    background: rgba(50,30,50,.65);
+    border-radius: 50%;
+
+    top: 0;
+}
+
+.basket-eye.left {
+    left: -18px;
+}
+
+.basket-eye.right {
+    right: -18px;
+}
+
+.basket-smile {
+    position: absolute;
+
+    width: 18px;
+    height: 9px;
+
+    border-bottom: 3px solid rgba(50,30,50,.65);
+    border-radius: 0 0 20px 20px;
+
+    left: -9px;
+    top: 14px;
+}
+
+.basket-label {
+    position: absolute;
+
+    bottom: -29px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    font-size: 13px;
+    font-weight: 900;
+
+    color: #555;
+
+    background: white;
+    padding: 3px 7px;
+    border-radius: 10px;
+
+    white-space: nowrap;
+}
+
+/* ---------------- FEEDBACK ---------------- */
+
+#feedback {
+    position: absolute;
+
+    left: 50%;
+    top: 185px;
+
+    transform: translateX(-50%) scale(.8);
+
+    z-index: 200;
+
+    font-size: 25px;
+    font-weight: 900;
+
+    background: white;
+
+    padding: 12px 22px;
+
+    border-radius: 30px;
+
+    box-shadow: 0 7px 20px rgba(0,0,0,.16);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: .25s ease;
+
+    white-space: nowrap;
+}
+
+#feedback.show {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+}
+
+/* ---------------- SPARKLES ---------------- */
+
+.sparkle {
+    position: absolute;
+
+    width: 12px;
+    height: 12px;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    z-index: 180;
+
+    animation: sparkle .8s ease-out forwards;
+}
+
+@keyframes sparkle {
+    0% {
+        opacity: 1;
+        transform: translate(0,0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(var(--dx),var(--dy))
+            scale(.1);
+    }
+}
+
+/* ---------------- START / GAME OVER ---------------- */
+
+.overlay {
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 500;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(223,248,255,.97),
+            rgba(255,244,214,.98)
+        );
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.title {
+    font-size: 40px;
+    color: #ff6699;
+
+    margin: 0 0 8px;
+
+    text-shadow:
+        2px 3px 0 #ffc3d7;
+}
+
+.subtitle {
+    color: #666;
+
+    font-size: 18px;
+
+    line-height: 1.5;
+
+    max-width: 350px;
+
+    margin-bottom: 28px;
+}
+
+.big-character {
+    font-size: 85px;
+
+    animation:
+        characterBounce 1.8s infinite ease-in-out;
+}
+
+@keyframes characterBounce {
+    0%,100% {
+        transform: translateY(0) rotate(-3deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(3deg);
+    }
+}
+
+.play-button {
+    border: none;
+
+    padding: 18px 42px;
+
+    border-radius: 40px;
+
+    background: #ffb703;
+
+    color: white;
+
+    font-size: 23px;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 7px 0 #e68a00,
+        0 10px 25px rgba(0,0,0,.18);
+
+    cursor: pointer;
+}
+
+.play-button:active {
+    transform: translateY(5px);
+
+    box-shadow:
+        0 2px 0 #e68a00;
+}
+
+.final-score {
+    font-size: 25px;
+    color: #36a852;
+    font-weight: 900;
+    margin: 12px 0 25px;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media (max-height: 700px) {
+
+    #header {
+        height: 75px;
+    }
+
+    #play-area {
+        top: 75px;
+        bottom: 170px;
+    }
+
+    #baskets {
+        height: 170px;
+    }
+
+    .basket {
+        height: 100px;
+    }
+
+    #target-area {
+        top: 85px;
+    }
+
+    #helper {
+        display: none;
+    }
+
+    #feedback {
+        top: 155px;
+    }
+}
+
+@media (max-width: 360px) {
+
+    #header {
+        padding: 8px;
+    }
+
+    .stat {
+        min-width: 65px;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .basket {
+        width: 18%;
+        height: 105px;
+    }
+
+    .basket-label {
+        font-size: 10px;
+    }
+
+    #object {
+        width: 76px;
+        height: 76px;
+    }
+
+    #object-symbol {
+        font-size: 37px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <!-- HEADER -->
+    <div id="header">
+
+        <div class="stat">
+            <div class="stat-label">SCORE</div>
+            <div class="stat-value" id="score-value">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">STREAK</div>
+            <div class="stat-value" id="streak-value">0 🔥</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">ROUND</div>
+            <div class="stat-value" id="round-value">1</div>
+        </div>
+
+    </div>
+
+    <!-- TARGET -->
+    <div id="target-area">
+        <div id="target-small">FIND THIS COLOR</div>
+        <div id="target-color">RED ❤️</div>
+    </div>
+
+    <!-- BACKGROUND -->
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+
+    <!-- PLAY AREA -->
+    <div id="play-area">
+
+        <div id="helper">
+
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+
+            <div id="helper-body">
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+
+                <div class="cheek left"></div>
+                <div class="cheek right"></div>
+
+                <div class="mouth"></div>
+            </div>
+
+            <div id="helper-message">
+                Let's match! 💕
+            </div>
+
+        </div>
+
+        <!-- ACTIVE OBJECT -->
+        <div id="object">
+
+            <div id="object-symbol">🍎</div>
+
+            <div id="object-face">
+                <div class="face-eye left"></div>
+                <div class="face-eye right"></div>
+                <div class="face-mouth"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BASKETS -->
+    <div id="baskets"></div>
+
+    <!-- FEEDBACK -->
+    <div id="feedback"></div>
+
+    <!-- START SCREEN -->
+    <div id="start-screen" class="overlay">
+
+        <div class="big-character">🐻</div>
+
+        <h1 class="title">CuddleColor</h1>
+
+        <div class="subtitle">
+            Let's help our little friend find the
+            <b>matching color basket!</b>
+            <br><br>
+            Touch, drag and drop gently. 🌈
+        </div>
+
+        <button class="play-button" onclick="startGame()">
+            💕 Let's Play!
+        </button>
+
+    </div>
+
+    <!-- GAME OVER -->
+    <div id="game-over" class="overlay hidden">
+
+        <div class="big-character">🌟</div>
+
+        <h1 class="title">Wonderful!</h1>
+
+        <div class="subtitle">
+            You did a beautiful job helping our little friends!
+        </div>
+
+        <div class="final-score" id="final-score">
+            ⭐ Score: 0
+        </div>
+
+        <button class="play-button" onclick="startGame()">
+            🌈 Play Again
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   GAME CONFIGURATION
+========================================================= */
+
+const game = document.getElementById("game");
+const playArea = document.getElementById("play-area");
+const object = document.getElementById("object");
+const objectSymbol = document.getElementById("object-symbol");
+const basketsContainer = document.getElementById("baskets");
+
+const scoreValue = document.getElementById("score-value");
+const streakValue = document.getElementById("streak-value");
+const roundValue = document.getElementById("round-value");
+
+const targetColor = document.getElementById("target-color");
+const feedback = document.getElementById("feedback");
+
+const helperMessage = document.getElementById("helper-message");
+
+const startScreen = document.getElementById("start-screen");
+const gameOverScreen = document.getElementById("game-over");
+const finalScore = document.getElementById("final-score");
+
+
+/* =========================================================
+   COLORS
+========================================================= */
+
+const COLORS = [
+
+    {
+        name: "red",
+        label: "RED",
+        hex: "#ff6b6b",
+        dark: "#c92a2a",
+        emoji: "🍎"
+    },
+
+    {
+        name: "blue",
+        label: "BLUE",
+        hex: "#4dabf7",
+        dark: "#1864ab",
+        emoji: "💧"
+    },
+
+    {
+        name: "yellow",
+        label: "YELLOW",
+        hex: "#ffd43b",
+        dark: "#e67700",
+        emoji: "⭐"
+    },
+
+    {
+        name: "green",
+        label: "GREEN",
+        hex: "#69db7c",
+        dark: "#2b8a3e",
+        emoji: "🍃"
+    },
+
+    {
+        name: "purple",
+        label: "PURPLE",
+        hex: "#cc5de8",
+        dark: "#862e9c",
+        emoji: "🫐"
+    }
+
+];
+
+
+/* =========================================================
+   DIFFERENT CUTE OBJECTS
+========================================================= */
+
+const OBJECT_SHAPES = [
+
+    "🍎",
+    "⭐",
+    "🌸",
+    "🧸",
+    "🍀",
+    "🦋",
+    "💎",
+    "🌈",
+    "🍭",
+    "🎈"
+];
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let score = 0;
+let streak = 0;
+let round = 1;
+
+let currentColor = null;
+
+let gameRunning = false;
+
+let dragging = false;
+
+let pointerOffsetX = 0;
+let pointerOffsetY = 0;
+
+let objectX = 0;
+let objectY = 0;
+
+let startObjectX = 0;
+let startObjectY = 0;
+
+let animationFrame = null;
+
+let basketElements = [];
+
+let audioContext = null;
+
+let speechEnabled = true;
+
+let objectMoving = false;
+
+let moveTimer = null;
+
+
+/* =========================================================
+   AUDIO
+========================================================= */
+
+function initAudio() {
+
+    if (!audioContext) {
+
+        audioContext =
+            new (window.AudioContext ||
+                 window.webkitAudioContext)();
+
+    }
+
+    if (audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+}
+
+
+/* Gentle synthesized sound */
+
+function playTone(
+    frequency,
+    duration = 0.15,
+    type = "sine",
+    volume = 0.12
+) {
+
+    if (!audioContext) return;
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+    oscillator.type = type;
+
+    oscillator.frequency.value = frequency;
+
+    gain.gain.setValueAtTime(
+        volume,
+        audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(audioContext.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + duration
+    );
+}
+
+
+/* Pickup sound */
+
+function soundPickup() {
+
+    playTone(500, .08, "sine", .08);
+    setTimeout(() => playTone(700, .08, "sine", .06), 60);
+
+}
+
+
+/* Correct answer */
+
+function soundCorrect() {
+
+    playTone(523, .12, "triangle", .13);
+
+    setTimeout(
+        () => playTone(659, .12, "triangle", .13),
+        100
+    );
+
+    setTimeout(
+        () => playTone(784, .18, "triangle", .13),
+        200
+    );
+
+    setTimeout(
+        () => playTone(1047, .25, "triangle", .11),
+        300
+    );
+
+}
+
+
+/* Wrong answer */
+
+function soundWrong() {
+
+    playTone(240, .15, "sine", .08);
+
+    setTimeout(
+        () => playTone(190, .2, "sine", .06),
+        100
+    );
+
+}
+
+
+/* Basket hover */
+
+function soundHover() {
+
+    playTone(650, .07, "sine", .035);
+
+}
+
+
+/* Game complete */
+
+function soundComplete() {
+
+    const notes = [
+        523,
+        659,
+        784,
+        1047,
+        1319
+    ];
+
+    notes.forEach((note, index) => {
+
+        setTimeout(
+            () => playTone(
+                note,
+                .3,
+                "triangle",
+                .1
+            ),
+            index * 120
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   VOICE
+========================================================= */
+
+function speak(text) {
+
+    if (!speechEnabled) return;
+
+    if (!("speechSynthesis" in window)) return;
+
+    window.speechSynthesis.cancel();
+
+    const message =
+        new SpeechSynthesisUtterance(text);
+
+    message.rate = .85;
+    message.pitch = 1.15;
+    message.volume = .9;
+
+    window.speechSynthesis.speak(message);
+}
+
+
+function announceColor() {
+
+    if (!currentColor) return;
+
+    setTimeout(() => {
+
+        speak(
+            "Find " +
+            currentColor.label.toLowerCase()
+        );
+
+    }, 250);
+
+}
+
+
+/* =========================================================
+   BASKETS
+========================================================= */
+
+function createBaskets() {
+
+    basketsContainer.innerHTML = "";
+
+    basketElements = [];
+
+    COLORS.forEach((color, index) => {
+
+        const basket =
+            document.createElement("div");
+
+        basket.className = "basket";
+
+        basket.dataset.color =
+            color.name;
+
+        basket.style.background =
+            color.hex;
+
+        basket.style.color =
+            color.hex;
+
+        basket.innerHTML = `
+
+            <div class="basket-face">
+
+                <div class="basket-eye left"></div>
+                <div class="basket-eye right"></div>
+
+                <div class="basket-smile"></div>
+
+            </div>
+
+            <div class="basket-label">
+                ${color.label}
+            </div>
+        `;
+
+        basketsContainer.appendChild(basket);
+
+        basketElements.push(basket);
+
+    });
+
+}
+
+
+/* =========================================================
+   OBJECT CREATION
+========================================================= */
+
+function chooseNewColor() {
+
+    currentColor =
+        COLORS[
+            Math.floor(
+                Math.random() * COLORS.length
+            )
+        ];
+
+}
+
+
+function setupObject() {
+
+    chooseNewColor();
+
+    object.style.background =
+        currentColor.hex;
+
+    object.style.borderColor =
+        "#ffffff";
+
+    objectSymbol.textContent =
+        OBJECT_SHAPES[
+            Math.floor(
+                Math.random() *
+                OBJECT_SHAPES.length
+            )
+        ];
+
+    targetColor.textContent =
+        currentColor.label +
+        " " +
+        getColorEmoji(currentColor.name);
+
+    targetColor.style.color =
+        currentColor.dark;
+
+    object.style.display = "flex";
+
+    positionObject();
+
+    animateObjectEntrance();
+
+    announceColor();
+
+}
+
+
+/* =========================================================
+   COLOR EMOJIS
+========================================================= */
+
+function getColorEmoji(color) {
+
+    const map = {
+        red: "❤️",
+        blue: "💙",
+        yellow: "💛",
+        green: "💚",
+        purple: "💜"
+    };
+
+    return map[color] || "🌈";
+}
+
+
+/* =========================================================
+   OBJECT POSITION
+========================================================= */
+
+function positionObject() {
+
+    const areaWidth =
+        playArea.clientWidth;
+
+    const areaHeight =
+        playArea.clientHeight;
+
+    const size =
+        object.offsetWidth || 86;
+
+    const minX = 25;
+
+    const maxX =
+        Math.max(
+            minX,
+            areaWidth - size - 25
+        );
+
+    objectX =
+        minX +
+        Math.random() *
+        (maxX - minX);
+
+    objectY = 115;
+
+    startObjectX = objectX;
+    startObjectY = objectY;
+
+    setObjectPosition();
+
+}
+
+
+function setObjectPosition() {
+
+    object.style.left =
+        objectX + "px";
+
+    object.style.top =
+        objectY + "px";
+
+}
+
+
+/* =========================================================
+   OBJECT ENTRANCE
+========================================================= */
+
+function animateObjectEntrance() {
+
+    object.style.transform =
+        "scale(.2) rotate(-15deg)";
+
+    object.style.opacity = "0";
+
+    setTimeout(() => {
+
+        object.style.transition =
+            "transform .45s cubic-bezier(.2,1.5,.5,1), opacity .3s";
+
+        object.style.transform =
+            "scale(1) rotate(0deg)";
+
+        object.style.opacity = "1";
+
+    }, 50);
+
+}
+
+
+/* =========================================================
+   DRAGGING
+========================================================= */
+
+function getTouchPosition(e) {
+
+    let touch;
+
+    if (e.touches && e.touches.length) {
+
+        touch = e.touches[0];
+
+    } else if (
+        e.changedTouches &&
+        e.changedTouches.length
+    ) {
+
+        touch = e.changedTouches[0];
+
+    } else {
+
+        return {
+            x: e.clientX,
+            y: e.clientY
+        };
+
+    }
+
+    return {
+        x: touch.clientX,
+        y: touch.clientY
+    };
+
+}
+
+
+/* Start dragging */
+
+function startDrag(e) {
+
+    if (!gameRunning) return;
+
+    if (dragging) return;
+
+    e.preventDefault();
+
+    initAudio();
+
+    const point =
+        getTouchPosition(e);
+
+    const rect =
+        object.getBoundingClientRect();
+
+    pointerOffsetX =
+        point.x - rect.left;
+
+    pointerOffsetY =
+        point.y - rect.top;
+
+    dragging = true;
+
+    object.classList.add("dragging");
+
+    soundPickup();
+
+    helperMessage.textContent =
+        "You can do it! 💕";
+
+}
+
+
+/* Continue dragging */
+
+function moveDrag(e) {
+
+    if (!dragging || !gameRunning) return;
+
+    e.preventDefault();
+
+    const point =
+        getTouchPosition(e);
+
+    const gameRect =
+        game.getBoundingClientRect();
+
+    objectX =
+        point.x -
+        gameRect.left -
+        pointerOffsetX;
+
+    objectY =
+        point.y -
+        gameRect.top -
+        pointerOffsetY -
+        92;
+
+    /* Allow object to travel into basket area */
+
+    const maxX =
+        playArea.clientWidth -
+        object.offsetWidth +
+        25;
+
+    const maxY =
+        game.clientHeight -
+        object.offsetHeight -
+        5;
+
+    objectX =
+        Math.max(
+            -20,
+            Math.min(objectX, maxX)
+        );
+
+    objectY =
+        Math.max(
+            0,
+            Math.min(objectY, maxY)
+        );
+
+    setObjectPosition();
+
+    updateBasketHighlight();
+
+}
+
+
+/* =========================================================
+   BASKET HIT DETECTION
+========================================================= */
+
+function getObjectCenter() {
+
+    const objectRect =
+        object.getBoundingClientRect();
+
+    return {
+        x:
+            objectRect.left +
+            objectRect.width / 2,
+
+        y:
+            objectRect.top +
+            objectRect.height / 2
+    };
+
+}
+
+
+function getNearestBasket() {
+
+    const center =
+        getObjectCenter();
+
+    let nearest = null;
+
+    let nearestDistance =
+        Infinity;
+
+    basketElements.forEach(basket => {
+
+        const rect =
+            basket.getBoundingClientRect();
+
+        const basketCenterX =
+            rect.left +
+            rect.width / 2;
+
+        const basketCenterY =
+            rect.top +
+            rect.height / 2;
+
+        const distance =
+            Math.sqrt(
+                Math.pow(
+                    center.x - basketCenterX,
+                    2
+                ) +
+                Math.pow(
+                    center.y - basketCenterY,
+                    2
+                )
+            );
+
+        /*
+         * Large forgiving touch area.
+         */
+
+        const allowedDistance =
+            Math.max(
+                rect.width,
+                rect.height
+            ) / 2 + 45;
+
+        if (
+            distance < allowedDistance &&
+            distance < nearestDistance
+        ) {
+
+            nearest = basket;
+            nearestDistance = distance;
+
+        }
+
+    });
+
+    return nearest;
+
+}
+
+
+/* Highlight basket */
+
+let lastHighlighted = null;
+
+function updateBasketHighlight() {
+
+    const basket =
+        getNearestBasket();
+
+    basketElements.forEach(b => {
+
+        b.classList.remove(
+            "highlight"
+        );
+
+    });
+
+    if (basket) {
+
+        basket.classList.add(
+            "highlight"
+        );
+
+        if (
+            lastHighlighted !== basket
+        ) {
+
+            soundHover();
+
+        }
+
+        lastHighlighted = basket;
+
+    } else {
+
+        lastHighlighted = null;
+
+    }
+
+}
+
+
+/* =========================================================
+   END DRAG
+========================================================= */
+
+function endDrag(e) {
+
+    if (!dragging) return;
+
+    e.preventDefault();
+
+    dragging = false;
+
+    object.classList.remove("dragging");
+
+    basketElements.forEach(
+        b =>
+            b.classList.remove("highlight")
+    );
+
+    const basket =
+        getNearestBasket();
+
+    if (basket) {
+
+        const basketColor =
+            basket.dataset.color;
+
+        if (
+            basketColor ===
+            currentColor.name
+        ) {
+
+            handleCorrect(basket);
+
+        } else {
+
+            handleWrong();
+
+        }
+
+    } else {
+
+        returnObject();
+
+    }
+
+}
+
+
+/* =========================================================
+   CORRECT MATCH
+========================================================= */
+
+function handleCorrect(basket) {
+
+    score += 10;
+
+    streak++;
+
+    round++;
+
+    updateUI();
+
+    soundCorrect();
+
+    helperMessage.textContent =
+        getEncouragement();
+
+    showFeedback(
+        "✨ Wonderful! +10 ✨",
+        "#36a852"
+    );
+
+    basket.classList.add(
+        "correct-bounce"
+    );
+
+    createSparkles(basket);
+
+    object.style.transition =
+        "all .35s ease";
+
+    const basketRect =
+        basket.getBoundingClientRect();
+
+    const gameRect =
+        game.getBoundingClientRect();
+
+    objectX =
+        basketRect.left -
+        gameRect.left +
+        basketRect.width / 2 -
+        object.offsetWidth / 2;
+
+    objectY =
+        basketRect.top -
+        gameRect.top -
+        object.offsetHeight / 2 -
+        92;
+
+    setObjectPosition();
+
+    object.style.transform =
+        "scale(.25) rotate(20deg)";
+
+    object.style.opacity = "0";
+
+    setTimeout(() => {
+
+        basket.classList.remove(
+            "correct-bounce"
+        );
+
+        setupObject();
+
+    }, 650);
+
+}
+
+
+/* =========================================================
+   WRONG MATCH
+========================================================= */
+
+function handleWrong() {
+
+    streak = 0;
+
+    updateUI();
+
+    soundWrong();
+
+    helperMessage.textContent =
+        "That's okay! Try again 🌸";
+
+    showFeedback(
+        "🌸 Try another basket",
+        "#ff6b8a"
+    );
+
+    speak(
+        "Try again"
+    );
+
+    returnObject();
+
+}
+
+
+/* =========================================================
+   RETURN OBJECT
+========================================================= */
+
+function returnObject() {
+
+    object.style.transition =
+        "left .45s ease, top .45s ease, transform .45s ease";
+
+    objectX = startObjectX;
+    objectY = startObjectY;
+
+    setObjectPosition();
+
+    object.style.transform =
+        "scale(1) rotate(0deg)";
+
+}
+
+
+/* =========================================================
+   FEEDBACK
+========================================================= */
+
+let feedbackTimeout;
+
+function showFeedback(text, color) {
+
+    feedback.textContent = text;
+
+    feedback.style.color = color;
+
+    feedback.classList.add("show");
+
+    clearTimeout(feedbackTimeout);
+
+    feedbackTimeout =
+        setTimeout(() => {
+
+            feedback.classList.remove(
+                "show"
+            );
+
+        }, 1100);
+
+}
+
+
+/* =========================================================
+   ENCOURAGEMENT
+========================================================= */
+
+function getEncouragement() {
+
+    const messages = [
+
+        "Wonderful! 🌟",
+        "Amazing! 💕",
+        "Beautiful! 🌈",
+        "Great job! 🥰",
+        "You found it! ✨",
+        "Perfect match! 🎉",
+        "Fantastic! 💖"
+
+    ];
+
+    return messages[
+        Math.floor(
+            Math.random() *
+            messages.length
+        )
+    ];
+
+}
+
+
+/* =========================================================
+   SPARKLES
+========================================================= */
+
+function createSparkles(basket) {
+
+    const rect =
+        basket.getBoundingClientRect();
+
+    const gameRect =
+        game.getBoundingClientRect();
+
+    const centerX =
+        rect.left -
+        gameRect.left +
+        rect.width / 2;
+
+    const centerY =
+        rect.top -
+        gameRect.top +
+        rect.height / 2;
+
+    for (
+        let i = 0;
+        i < 18;
+        i++
+    ) {
+
+        const sparkle =
+            document.createElement("div");
+
+        sparkle.className =
+            "sparkle";
+
+        sparkle.style.left =
+            centerX + "px";
+
+        sparkle.style.top =
+            centerY + "px";
+
+        sparkle.style.background =
+            COLORS[
+                Math.floor(
+                    Math.random() *
+                    COLORS.length
+                )
+            ].hex;
+
+        sparkle.style.setProperty(
+            "--dx",
+            ((Math.random()-.5)*180) + "px"
+        );
+
+        sparkle.style.setProperty(
+            "--dy",
+            ((Math.random()-.5)*160) + "px"
+        );
+
+        game.appendChild(sparkle);
+
+        setTimeout(
+            () => sparkle.remove(),
+            900
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function updateUI() {
+
+    scoreValue.textContent =
+        score;
+
+    streakValue.textContent =
+        streak + " 🔥";
+
+    roundValue.textContent =
+        round;
+
+}
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+function startGame() {
+
+    initAudio();
+
+    if (
+        "speechSynthesis" in window
+    ) {
+
+        window.speechSynthesis.cancel();
+
+    }
+
+    score = 0;
+    streak = 0;
+    round = 1;
+
+    gameRunning = true;
+
+    startScreen.classList.add(
+        "hidden"
+    );
+
+    gameOverScreen.classList.add(
+        "hidden"
+    );
+
+    createBaskets();
+
+    updateUI();
+
+    helperMessage.textContent =
+        "Let's match! 💕";
+
+    setupObject();
+
+}
+
+
+/* =========================================================
+   OPTIONAL GAME END
+========================================================= */
+
+function endGame() {
+
+    gameRunning = false;
+
+    if (
+        "speechSynthesis" in window
+    ) {
+
+        window.speechSynthesis.cancel();
+
+    }
+
+    soundComplete();
+
+    finalScore.textContent =
+        "⭐ Score: " + score;
+
+    gameOverScreen.classList.remove(
+        "hidden"
+    );
+
+}
+
+
+/* =========================================================
+   TOUCH EVENTS
+========================================================= */
+
+/*
+ * IMPORTANT:
+ * We use document-level touch events.
+ *
+ * This means the drag continues even when
+ * the finger moves outside the object.
+ */
+
+object.addEventListener(
+    "touchstart",
+    startDrag,
+    { passive: false }
+);
+
+document.addEventListener(
+    "touchmove",
+    moveDrag,
+    { passive: false }
+);
+
+document.addEventListener(
+    "touchend",
+    endDrag,
+    { passive: false }
+);
+
+document.addEventListener(
+    "touchcancel",
+    endDrag,
+    { passive: false }
+);
+
+
+/* =========================================================
+   MOUSE EVENTS
+   Useful when testing on PC.
+========================================================= */
+
+object.addEventListener(
+    "mousedown",
+    startDrag
+);
+
+document.addEventListener(
+    "mousemove",
+    moveDrag
+);
+
+document.addEventListener(
+    "mouseup",
+    endDrag
+);
+
+
+/* =========================================================
+   RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if (!gameRunning) return;
+
+        positionObject();
+
+    }
+);
+
+
+/* =========================================================
+   PREVENT UNWANTED MOBILE BEHAVIOR
+========================================================= */
+
+document.addEventListener(
+    "contextmenu",
+    e => e.preventDefault()
+);
+
+document.addEventListener(
+    "gesturestart",
+    e => e.preventDefault()
+);
+
+document.addEventListener(
+    "dblclick",
+    e => e.preventDefault()
+);
+
+
+/* =========================================================
+   INITIAL STATE
+========================================================= */
+
+createBaskets();
+
+object.style.display = "none";
+
+</script>
+
+</body>
+</html>
