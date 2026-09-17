@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -13,10 +14,15 @@
 
 <style>
 
+/* ================================
+   BASIC
+================================ */
+
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
@@ -26,75 +32,100 @@ html,
 body {
     width: 100%;
     height: 100%;
+
     overflow: hidden;
+
     touch-action: none;
+
     font-family: Arial, sans-serif;
 }
 
-/* =========================
+
+/* ================================
    GAME
-========================= */
+================================ */
 
 #game {
+
     position: fixed;
-    inset: 0;
+
+    left: 0;
+    top: 0;
+
+    width: 100vw;
+    height: 100vh;
+
     overflow: hidden;
+
     background:
         linear-gradient(
-            180deg,
-            #dff7ff 0%,
-            #f4fbff 60%,
-            #ffffff 100%
+            to bottom,
+            #dff6ff,
+            #f8fcff
         );
 }
 
-/* =========================
+
+/* ================================
    HEADER
-========================= */
+================================ */
 
 #header {
+
     position: absolute;
-    top: 0;
+
     left: 0;
+    top: 0;
 
     width: 100%;
-    height: 72px;
+    height: 70px;
+
+    background: white;
 
     display: flex;
     justify-content: space-around;
     align-items: center;
 
-    background: white;
+    box-shadow:
+        0 3px 12px rgba(0,0,0,.15);
 
-    box-shadow: 0 3px 12px rgba(0,0,0,0.12);
-
-    z-index: 100;
+    z-index: 1000;
 }
 
 .stat {
     text-align: center;
 }
 
-.stat-title {
-    font-size: 11px;
+.stat small {
+    display: block;
+
     color: #777;
+
+    font-size: 11px;
+
     font-weight: bold;
 }
 
-.stat-value {
-    font-size: 20px;
-    font-weight: bold;
+.stat strong {
+
+    display: block;
+
     margin-top: 3px;
+
+    font-size: 20px;
 }
 
-/* =========================
+
+/* ================================
    INSTRUCTION
-========================= */
+================================ */
 
 #instruction {
+
     position: absolute;
 
-    top: 84px;
+    top: 82px;
+
     left: 50%;
 
     transform: translateX(-50%);
@@ -103,53 +134,38 @@ body {
 
     padding: 12px;
 
-    border-radius: 18px;
-
     background: white;
+
+    border-radius: 20px;
 
     text-align: center;
 
     font-size: 16px;
+
     font-weight: bold;
 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.12);
 
-    z-index: 90;
+    z-index: 900;
 }
 
-/* =========================
-   PLAY FIELD
-========================= */
 
-#playField {
-    position: absolute;
-
-    top: 140px;
-    left: 0;
-
-    width: 100%;
-
-    bottom: 175px;
-
-    overflow: visible;
-
-    z-index: 20;
-}
-
-/* =========================
-   COLOR OBJECT
-========================= */
+/* ================================
+   OBJECT
+================================ */
 
 .color-object {
 
     position: absolute;
 
-    width: 70px;
-    height: 70px;
+    width: 72px;
+    height: 72px;
 
     border-radius: 50%;
 
     display: flex;
+
     justify-content: center;
     align-items: center;
 
@@ -158,10 +174,15 @@ body {
     border: 4px solid white;
 
     box-shadow:
-        0 7px 15px rgba(0,0,0,0.25),
-        inset 0 5px 7px rgba(255,255,255,0.5);
+        0 7px 15px rgba(0,0,0,.25),
+        inset 0 5px 7px rgba(255,255,255,.5);
 
-    z-index: 200;
+    z-index: 2000;
+
+    /*
+       VERY IMPORTANT
+       Prevent browser scrolling/selection.
+    */
 
     touch-action: none;
 
@@ -170,26 +191,24 @@ body {
 
 .color-object.dragging {
 
-    transform: scale(1.18);
-
-    cursor: grabbing;
+    transform: scale(1.2);
 
     box-shadow:
-        0 12px 25px rgba(0,0,0,0.3),
-        inset 0 5px 8px rgba(255,255,255,0.5);
-
+        0 12px 25px rgba(0,0,0,.35),
+        0 0 0 4px white;
 }
 
-/* =========================
+
+/* ================================
    COLORS
-========================= */
+================================ */
 
 .red {
     background: #ff4747;
 }
 
 .blue {
-    background: #3287f5;
+    background: #3485f5;
 }
 
 .yellow {
@@ -197,16 +216,17 @@ body {
 }
 
 .green {
-    background: #31c96b;
+    background: #35c96b;
 }
 
 .purple {
     background: #a855f7;
 }
 
-/* =========================
-   BASKET AREA
-========================= */
+
+/* ================================
+   BOTTOM BASKETS
+================================ */
 
 #basketArea {
 
@@ -220,9 +240,6 @@ body {
 
     background: white;
 
-    box-shadow:
-        0 -5px 18px rgba(0,0,0,0.15);
-
     display: flex;
 
     justify-content: space-evenly;
@@ -231,15 +248,19 @@ body {
 
     padding:
         8px
-        4px
-        18px;
+        3px
+        15px;
 
-    z-index: 80;
+    box-shadow:
+        0 -5px 18px rgba(0,0,0,.15);
+
+    z-index: 100;
 }
 
-/* =========================
+
+/* ================================
    BASKET
-========================= */
+================================ */
 
 .basket-container {
 
@@ -253,12 +274,12 @@ body {
 
     align-items: center;
 
-    gap: 6px;
+    gap: 5px;
 }
 
 .basket-label {
 
-    font-size: 12px;
+    font-size: 11px;
 
     font-weight: bold;
 
@@ -267,10 +288,8 @@ body {
 
 .basket {
 
-    position: relative;
-
     width: 100%;
-    height: 88px;
+    height: 90px;
 
     border-radius:
         12px
@@ -280,6 +299,8 @@ body {
 
     border: 5px solid white;
 
+    position: relative;
+
     display: flex;
 
     justify-content: center;
@@ -287,15 +308,23 @@ body {
     align-items: center;
 
     box-shadow:
-        0 5px 10px rgba(0,0,0,0.22),
-        inset 0 5px 8px rgba(255,255,255,0.35);
+        0 5px 12px rgba(0,0,0,.22),
+        inset 0 5px 8px rgba(255,255,255,.35);
+
+    /*
+       IMPORTANT:
+       Basket must accept the touch.
+    */
+
+    touch-action: none;
 
     transition:
-        transform 0.12s,
-        box-shadow 0.12s;
+        transform .15s,
+        box-shadow .15s;
 }
 
-/* basket opening */
+
+/* Basket opening */
 
 .basket::before {
 
@@ -313,74 +342,47 @@ body {
 
     border-radius: 50%;
 
-    background: rgba(0,0,0,0.16);
+    background:
+        rgba(0,0,0,.15);
 }
 
-/* =========================
+
+/* ================================
    BASKET HIGHLIGHT
-========================= */
+================================ */
 
 .basket.highlight {
 
-    transform: scale(1.1);
+    transform: scale(1.12);
 
     box-shadow:
         0 0 0 5px white,
-        0 0 25px rgba(0,0,0,0.35);
+        0 0 25px rgba(0,0,0,.35);
 }
 
-/* =========================
-   CORRECT ANIMATION
-========================= */
 
-.basket.correct {
-
-    animation: correctBasket 0.5s ease;
-
-}
-
-@keyframes correctBasket {
-
-    0% {
-        transform: scale(1);
-    }
-
-    40% {
-        transform: scale(1.18);
-    }
-
-    70% {
-        transform: scale(0.95);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-
-}
-
-/* =========================
+/* ================================
    MESSAGE
-========================= */
+================================ */
 
 #message {
 
     position: absolute;
 
-    top: 48%;
     left: 50%;
+    top: 48%;
 
     transform:
-        translate(-50%, -50%)
-        scale(0.7);
+        translate(-50%,-50%)
+        scale(.7);
 
     padding:
-        15px
+        16px
         28px;
 
-    border-radius: 25px;
-
     background: white;
+
+    border-radius: 25px;
 
     font-size: 25px;
 
@@ -390,14 +392,13 @@ body {
 
     pointer-events: none;
 
-    z-index: 500;
+    z-index: 5000;
 
     box-shadow:
-        0 8px 25px rgba(0,0,0,0.2);
+        0 8px 25px rgba(0,0,0,.25);
 
     transition:
-        opacity 0.2s,
-        transform 0.2s;
+        .2s;
 }
 
 #message.show {
@@ -405,20 +406,23 @@ body {
     opacity: 1;
 
     transform:
-        translate(-50%, -50%)
+        translate(-50%,-50%)
         scale(1);
-
 }
 
-/* =========================
+
+/* ================================
    GAME OVER
-========================= */
+================================ */
 
 #gameOver {
 
     position: absolute;
 
     inset: 0;
+
+    background:
+        rgba(255,255,255,.97);
 
     display: none;
 
@@ -428,9 +432,7 @@ body {
 
     align-items: center;
 
-    background: rgba(255,255,255,0.97);
-
-    z-index: 1000;
+    z-index: 10000;
 
     text-align: center;
 }
@@ -439,7 +441,7 @@ body {
 
     font-size: 40px;
 
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 #finalScore {
@@ -455,93 +457,100 @@ body {
 
     border: none;
 
-    padding:
-        16px
-        38px;
-
-    border-radius: 30px;
-
     background: #2563eb;
 
     color: white;
+
+    padding:
+        16px
+        40px;
+
+    border-radius: 30px;
 
     font-size: 19px;
 
     font-weight: bold;
 }
 
-/* =========================
-   MOBILE
-========================= */
+
+/* ================================
+   SMALL PHONE
+================================ */
 
 @media(max-width:380px) {
 
     #header {
-        height: 65px;
+        height: 64px;
     }
 
     #instruction {
-        top: 75px;
-        font-size: 14px;
-    }
 
-    #playField {
-        top: 125px;
-        bottom: 155px;
+        top: 75px;
+
+        font-size: 14px;
+
+        padding: 10px;
     }
 
     #basketArea {
+
         height: 155px;
+
+        padding-bottom: 12px;
     }
 
     .basket {
-        height: 72px;
+
+        height: 75px;
     }
 
     .basket-label {
-        font-size: 10px;
+
+        font-size: 9px;
     }
 
     .color-object {
-        width: 62px;
-        height: 62px;
+
+        width: 64px;
+        height: 64px;
+
         font-size: 28px;
     }
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div id="game">
+
 
     <!-- HEADER -->
 
     <div id="header">
 
         <div class="stat">
-            <div class="stat-title">SCORE</div>
-            <div id="score" class="stat-value">0</div>
+            <small>SCORE</small>
+            <strong id="score">0</strong>
         </div>
 
         <div class="stat">
-            <div class="stat-title">ROUND</div>
-            <div id="round" class="stat-value">1</div>
+            <small>ROUND</small>
+            <strong id="round">1</strong>
         </div>
 
         <div class="stat">
-            <div class="stat-title">LIVES</div>
-            <div id="lives" class="stat-value">
-                ❤️❤️❤️
-            </div>
+            <small>LIVES</small>
+            <strong id="lives">❤️❤️❤️</strong>
         </div>
 
         <div class="stat">
-            <div class="stat-title">TIME</div>
-            <div id="time" class="stat-value">
-                60
-            </div>
+            <small>TIME</small>
+            <strong id="time">60</strong>
         </div>
 
     </div>
@@ -550,18 +559,17 @@ body {
     <!-- INSTRUCTION -->
 
     <div id="instruction">
-        👆 Drag the object into the basket with the SAME COLOR
+
+        👆 DRAG THE OBJECT INTO THE
+        <b>SAME COLOR</b> BASKET
+
     </div>
-
-
-    <!-- PLAY FIELD -->
-
-    <div id="playField"></div>
 
 
     <!-- BASKETS -->
 
     <div id="basketArea">
+
 
         <div class="basket-container">
 
@@ -632,10 +640,9 @@ body {
 
         </div>
 
+
     </div>
 
-
-    <!-- MESSAGE -->
 
     <div id="message"></div>
 
@@ -656,10 +663,36 @@ body {
 
     </div>
 
+
 </div>
 
 
+
 <script>
+
+
+/* ==========================================
+   VARIABLES
+========================================== */
+
+let score = 0;
+
+let round = 1;
+
+let lives = 3;
+
+let timeLeft = 60;
+
+let gameRunning = true;
+
+let currentObject = null;
+
+let timer = null;
+
+let spawnTimer = null;
+
+let objectCounter = 0;
+
 
 /* ==========================================
    ELEMENTS
@@ -668,23 +701,23 @@ body {
 const game =
     document.getElementById("game");
 
-const playField =
-    document.getElementById("playField");
-
-const scoreElement =
+const scoreEl =
     document.getElementById("score");
 
-const roundElement =
+const roundEl =
     document.getElementById("round");
 
-const livesElement =
+const livesEl =
     document.getElementById("lives");
 
-const timeElement =
+const timeEl =
     document.getElementById("time");
 
-const messageElement =
+const messageEl =
     document.getElementById("message");
+
+const basketArea =
+    document.getElementById("basketArea");
 
 const gameOver =
     document.getElementById("gameOver");
@@ -694,27 +727,6 @@ const finalScore =
 
 const restart =
     document.getElementById("restart");
-
-
-/* ==========================================
-   VARIABLES
-========================================== */
-
-let score = 0;
-
-let lives = 3;
-
-let round = 1;
-
-let timeLeft = 60;
-
-let gameActive = true;
-
-let objectId = 0;
-
-let timerInterval;
-
-let spawnTimeout;
 
 
 /* ==========================================
@@ -730,7 +742,7 @@ const colors = [
 ];
 
 
-const emojis = {
+const emoji = {
 
     red: "🍎",
 
@@ -746,19 +758,20 @@ const emojis = {
 
 
 /* ==========================================
-   UPDATE SCREEN
+   UPDATE UI
 ========================================== */
 
-function updateScreen() {
+function updateUI() {
 
-    scoreElement.textContent =
+    scoreEl.textContent =
         score;
 
-    roundElement.textContent =
+    roundEl.textContent =
         round;
 
-    timeElement.textContent =
+    timeEl.textContent =
         timeLeft;
+
 
     let hearts = "";
 
@@ -768,33 +781,15 @@ function updateScreen() {
         i++
     ) {
 
-        if (i < lives) {
-
-            hearts += "❤️";
-
-        } else {
-
-            hearts += "🖤";
-
-        }
+        hearts +=
+            i < lives
+            ? "❤️"
+            : "🖤";
 
     }
 
-    livesElement.textContent =
+    livesEl.textContent =
         hearts;
-}
-
-
-/* ==========================================
-   RANDOM
-========================================== */
-
-function random(min, max) {
-
-    return Math.random()
-        * (max - min)
-        + min;
-
 }
 
 
@@ -804,8 +799,25 @@ function random(min, max) {
 
 function createObject() {
 
-    if (!gameActive)
+    if (!gameRunning)
         return;
+
+
+    /*
+       Remove old object first.
+
+       This makes the game easier to play
+       for dementia/cognitive training:
+       one object at a time.
+    */
+
+    if (currentObject) {
+
+        currentObject.remove();
+
+        currentObject = null;
+
+    }
 
 
     const color =
@@ -830,34 +842,32 @@ function createObject() {
 
 
     object.dataset.id =
-        objectId++;
+        objectCounter++;
 
 
-    object.textContent =
-        emojis[color];
+    object.innerHTML =
+        emoji[color];
 
 
     /*
-       IMPORTANT:
-       Object position is relative to
-       the WHOLE GAME instead of only
-       the play field.
+       Start position.
     */
 
-    const objectSize = 70;
+    const objectWidth = 72;
+
+
+    const maxX =
+        window.innerWidth
+        - objectWidth
+        - 10;
 
 
     const x =
-        random(
+        Math.random()
+        * Math.max(
             10,
-            window.innerWidth
-            - objectSize
-            - 10
+            maxX
         );
-
-
-    const topStart =
-        150;
 
 
     object.style.left =
@@ -865,16 +875,21 @@ function createObject() {
 
 
     object.style.top =
-        topStart + "px";
+        "155px";
 
 
     game.appendChild(object);
 
 
-    enableDragging(object);
+    currentObject =
+        object;
+
+
+    enableTouchDrag(object);
 
 
     startFalling(object);
+
 }
 
 
@@ -894,33 +909,39 @@ function startFalling(object) {
         performance.now();
 
 
-    function fall(currentTime) {
+    function animate(now) {
 
         if (!object.isConnected)
             return;
 
+
+        /*
+           STOP FALLING WHILE DRAGGING
+        */
 
         if (
             object.classList
                 .contains("dragging")
         ) {
 
-            lastTime =
-                currentTime;
+            lastTime = now;
 
-            requestAnimationFrame(fall);
+            requestAnimationFrame(
+                animate
+            );
 
             return;
+
         }
 
 
         const delta =
-            (currentTime - lastTime)
+            (now - lastTime)
             / 1000;
 
 
         lastTime =
-            currentTime;
+            now;
 
 
         y +=
@@ -928,18 +949,14 @@ function startFalling(object) {
             * delta;
 
 
-        object.style.top =
-            y + "px";
-
-
         /*
-           Stop before the basket area.
+           Don't allow object to enter
+           basket area automatically.
         */
 
         const basketTop =
-            document
-                .getElementById("basketArea")
-                .offsetTop;
+            basketArea.getBoundingClientRect()
+                .top;
 
 
         if (
@@ -949,27 +966,47 @@ function startFalling(object) {
 
             object.remove();
 
+            currentObject = null;
+
             loseLife();
+
+            if (gameRunning) {
+
+                setTimeout(
+                    createObject,
+                    300
+                );
+
+            }
 
             return;
 
         }
 
 
-        requestAnimationFrame(fall);
+        object.style.top =
+            y + "px";
+
+
+        requestAnimationFrame(
+            animate
+        );
 
     }
 
 
-    requestAnimationFrame(fall);
+    requestAnimationFrame(
+        animate
+    );
 }
 
 
 /* ==========================================
-   DRAGGING
+   MOBILE TOUCH DRAG
 ========================================== */
 
-function enableDragging(object) {
+function enableTouchDrag(object) {
+
 
     let dragging = false;
 
@@ -978,16 +1015,41 @@ function enableDragging(object) {
     let offsetY = 0;
 
 
-    /* =========================
+    /*
        TOUCH START
-    ========================= */
+    */
 
     object.addEventListener(
-        "pointerdown",
+        "touchstart",
         function(event) {
 
-            if (!gameActive)
+            if (!gameRunning)
                 return;
+
+
+            /*
+               Prevent scrolling.
+            */
+
+            event.preventDefault();
+
+
+            const touch =
+                event.touches[0];
+
+
+            const rect =
+                object.getBoundingClientRect();
+
+
+            offsetX =
+                touch.clientX
+                - rect.left;
+
+
+            offsetY =
+                touch.clientY
+                - rect.top;
 
 
             dragging = true;
@@ -999,64 +1061,56 @@ function enableDragging(object) {
 
 
             /*
-               This is extremely important
-               for mobile.
+               Bring object completely
+               above everything.
             */
 
-            object.setPointerCapture(
-                event.pointerId
-            );
+            object.style.zIndex =
+                "9999";
 
-
-            const rect =
-                object.getBoundingClientRect();
-
-
-            offsetX =
-                event.clientX
-                - rect.left;
-
-
-            offsetY =
-                event.clientY
-                - rect.top;
-
-
-            event.preventDefault();
-
+        },
+        {
+            passive: false
         }
     );
 
 
-    /* =========================
+    /*
        TOUCH MOVE
-    ========================= */
+    */
 
     object.addEventListener(
-        "pointermove",
+        "touchmove",
         function(event) {
 
             if (!dragging)
                 return;
 
 
+            event.preventDefault();
+
+
+            const touch =
+                event.touches[0];
+
+
             /*
-               Position relative to
-               ENTIRE SCREEN.
+               Calculate position based
+               directly on finger.
             */
 
             let x =
-                event.clientX
+                touch.clientX
                 - offsetX;
 
 
             let y =
-                event.clientY
+                touch.clientY
                 - offsetY;
 
 
             /*
-               Keep object inside screen.
+               Keep inside screen.
             */
 
             x =
@@ -1072,7 +1126,7 @@ function enableDragging(object) {
 
             y =
                 Math.max(
-                    72,
+                    70,
                     Math.min(
                         y,
                         window.innerHeight
@@ -1089,25 +1143,35 @@ function enableDragging(object) {
                 y + "px";
 
 
-            highlightBasket(object);
+            /*
+               Check basket continuously.
+            */
 
+            highlightBasketAt(
+                touch.clientX,
+                touch.clientY
+            );
 
-            event.preventDefault();
-
+        },
+        {
+            passive: false
         }
     );
 
 
-    /* =========================
-       TOUCH RELEASE
-    ========================= */
+    /*
+       TOUCH END
+    */
 
     object.addEventListener(
-        "pointerup",
+        "touchend",
         function(event) {
 
             if (!dragging)
                 return;
+
+
+            event.preventDefault();
 
 
             dragging = false;
@@ -1118,25 +1182,64 @@ function enableDragging(object) {
             );
 
 
-            removeHighlights();
+            object.style.zIndex =
+                "2000";
+
+
+            removeBasketHighlight();
 
 
             /*
-               Check exactly where
-               the object was released.
+               IMPORTANT:
+               Get the FINAL finger position.
             */
 
-            checkDrop(object);
+            const touch =
+                event.changedTouches[0];
 
 
-            event.preventDefault();
+            const basket =
+                findBasketAt(
+                    touch.clientX,
+                    touch.clientY
+                );
 
+
+            /*
+               WE FOUND A BASKET
+            */
+
+            if (basket) {
+
+                processDrop(
+                    object,
+                    basket
+                );
+
+            } else {
+
+                /*
+                   No basket.
+                   Return object.
+                */
+
+                returnObject(object);
+
+            }
+
+        },
+        {
+            passive: false
         }
     );
 
 
+    /*
+       TOUCH CANCEL
+    */
+
     object.addEventListener(
-        "pointercancel",
+        "touchcancel",
         function() {
 
             dragging = false;
@@ -1145,36 +1248,22 @@ function enableDragging(object) {
                 "dragging"
             );
 
-            removeHighlights();
+            removeBasketHighlight();
 
         }
     );
+
 }
 
 
 /* ==========================================
-   FIND BASKET
+   FIND BASKET USING FINGER
 ========================================== */
 
-function findBasket(object) {
-
-    const objectRect =
-        object.getBoundingClientRect();
-
-
-    /*
-       Use CENTER of object.
-    */
-
-    const centerX =
-        objectRect.left
-        + objectRect.width / 2;
-
-
-    const centerY =
-        objectRect.top
-        + objectRect.height / 2;
-
+function findBasketAt(
+    x,
+    y
+) {
 
     const baskets =
         document.querySelectorAll(
@@ -1186,42 +1275,39 @@ function findBasket(object) {
         const basket of baskets
     ) {
 
-        const basketRect =
+        const rect =
             basket.getBoundingClientRect();
 
 
         /*
-           Give the player a generous
-           drop area.
+           LARGE DROP ZONE.
+
+           The user doesn't need to
+           place the object perfectly.
         */
 
-        const extra =
-            15;
+        const padding = 25;
 
 
         if (
 
-            centerX >=
-            basketRect.left
-            - extra
+            x >=
+            rect.left - padding
 
             &&
 
-            centerX <=
-            basketRect.right
-            + extra
+            x <=
+            rect.right + padding
 
             &&
 
-            centerY >=
-            basketRect.top
-            - extra
+            y >=
+            rect.top - padding
 
             &&
 
-            centerY <=
-            basketRect.bottom
-            + extra
+            y <=
+            rect.bottom + padding
 
         ) {
 
@@ -1240,13 +1326,16 @@ function findBasket(object) {
    HIGHLIGHT BASKET
 ========================================== */
 
-function highlightBasket(object) {
+function highlightBasketAt(
+    x,
+    y
+) {
 
-    removeHighlights();
+    removeBasketHighlight();
 
 
     const basket =
-        findBasket(object);
+        findBasketAt(x, y);
 
 
     if (basket) {
@@ -1261,13 +1350,15 @@ function highlightBasket(object) {
 
 
 /* ==========================================
-   REMOVE HIGHLIGHTS
+   REMOVE HIGHLIGHT
 ========================================== */
 
-function removeHighlights() {
+function removeBasketHighlight() {
 
     document
-        .querySelectorAll(".basket")
+        .querySelectorAll(
+            ".basket"
+        )
         .forEach(
             basket => {
 
@@ -1282,27 +1373,13 @@ function removeHighlights() {
 
 
 /* ==========================================
-   CHECK DROP
+   PROCESS DROP
 ========================================== */
 
-function checkDrop(object) {
-
-    const basket =
-        findBasket(object);
-
-
-    /*
-       Not dropped on any basket.
-    */
-
-    if (!basket) {
-
-        returnObject(object);
-
-        return;
-
-    }
-
+function processDrop(
+    object,
+    basket
+) {
 
     const objectColor =
         object.dataset.color;
@@ -1313,7 +1390,7 @@ function checkDrop(object) {
 
 
     /*
-       CORRECT
+       CORRECT COLOR
     */
 
     if (
@@ -1325,8 +1402,11 @@ function checkDrop(object) {
         round++;
 
 
+        updateUI();
+
+
         basket.classList.add(
-            "correct"
+            "highlight"
         );
 
 
@@ -1336,41 +1416,44 @@ function checkDrop(object) {
         );
 
 
-        updateScreen();
-
-
-        setTimeout(
-            () => {
-
-                basket.classList.remove(
-                    "correct"
-                );
-
-            },
-            500
-        );
-
+        /*
+           Remove object.
+        */
 
         object.remove();
 
 
+        currentObject =
+            null;
+
+
+        setTimeout(
+            function() {
+
+                basket.classList.remove(
+                    "highlight"
+                );
+
+            },
+            400
+        );
+
+
         /*
-           Immediately create
-           another object.
+           New object.
         */
 
         setTimeout(
             createObject,
-            250
+            500
         );
 
-    }
 
-    /*
-       WRONG
-    */
+    } else {
 
-    else {
+        /*
+           WRONG COLOR
+        */
 
         score =
             Math.max(
@@ -1379,13 +1462,13 @@ function checkDrop(object) {
             );
 
 
+        updateUI();
+
+
         showMessage(
-            "✗ WRONG BASKET",
+            "✗ TRY AGAIN",
             false
         );
-
-
-        updateScreen();
 
 
         returnObject(object);
@@ -1406,41 +1489,47 @@ function returnObject(object) {
 
 
     object.animate(
-
         [
             {
                 transform:
                     "scale(1)"
             },
-
             {
                 transform:
-                    "scale(1.3)"
+                    "scale(1.25)"
             },
-
             {
                 transform:
                     "scale(1)"
             }
-
         ],
-
         {
-            duration: 450
+            duration: 400
         }
-
     );
 
 
     setTimeout(
-        () => {
+        function() {
 
             if (
                 object.isConnected
             ) {
 
+                object.style.left =
+                    (
+                        Math.random()
+                        *
+                        (
+                            window.innerWidth
+                            - object.offsetWidth
+                            - 10
+                        )
+                    ) + "px";
+
+
                 object.style.top =
-                    "150px";
+                    "155px";
 
             }
 
@@ -1452,19 +1541,57 @@ function returnObject(object) {
 
 
 /* ==========================================
+   MESSAGE
+========================================== */
+
+function showMessage(
+    text,
+    correct
+) {
+
+    messageEl.textContent =
+        text;
+
+
+    messageEl.style.color =
+        correct
+        ? "#16a34a"
+        : "#dc2626";
+
+
+    messageEl.classList.add(
+        "show"
+    );
+
+
+    setTimeout(
+        function() {
+
+            messageEl.classList.remove(
+                "show"
+            );
+
+        },
+        700
+    );
+
+}
+
+
+/* ==========================================
    LOSE LIFE
 ========================================== */
 
 function loseLife() {
 
-    if (!gameActive)
+    if (!gameRunning)
         return;
 
 
     lives--;
 
 
-    updateScreen();
+    updateUI();
 
 
     if (lives <= 0) {
@@ -1477,91 +1604,23 @@ function loseLife() {
 
 
 /* ==========================================
-   MESSAGE
-========================================== */
-
-function showMessage(
-    text,
-    success
-) {
-
-    messageElement.textContent =
-        text;
-
-
-    messageElement.style.color =
-        success
-        ? "#16a34a"
-        : "#dc2626";
-
-
-    messageElement.classList.add(
-        "show"
-    );
-
-
-    setTimeout(
-        () => {
-
-            messageElement.classList.remove(
-                "show"
-            );
-
-        },
-        650
-    );
-
-}
-
-
-/* ==========================================
-   SPAWN
-========================================== */
-
-function spawnLoop() {
-
-    if (!gameActive)
-        return;
-
-
-    createObject();
-
-
-    const delay =
-        Math.max(
-            900,
-            1700
-            - round * 40
-        );
-
-
-    spawnTimeout =
-        setTimeout(
-            spawnLoop,
-            delay
-        );
-
-}
-
-
-/* ==========================================
    TIMER
 ========================================== */
 
 function startTimer() {
 
-    timerInterval =
+    timer =
         setInterval(
-            () => {
+            function() {
 
-                if (!gameActive)
+                if (!gameRunning)
                     return;
 
 
                 timeLeft--;
 
 
-                updateScreen();
+                updateUI();
 
 
                 if (
@@ -1580,32 +1639,54 @@ function startTimer() {
 
 
 /* ==========================================
+   GAME LOOP
+========================================== */
+
+function startGame() {
+
+    score = 0;
+
+    round = 1;
+
+    lives = 3;
+
+    timeLeft = 60;
+
+    gameRunning = true;
+
+
+    updateUI();
+
+
+    createObject();
+
+
+    startTimer();
+
+}
+
+
+/* ==========================================
    END GAME
 ========================================== */
 
 function endGame() {
 
-    gameActive = false;
+    gameRunning = false;
 
 
-    clearInterval(
-        timerInterval
-    );
+    clearInterval(timer);
+
+    clearTimeout(spawnTimer);
 
 
-    clearTimeout(
-        spawnTimeout
-    );
+    if (currentObject) {
 
+        currentObject.remove();
 
-    document
-        .querySelectorAll(
-            ".color-object"
-        )
-        .forEach(
-            object =>
-                object.remove()
-        );
+        currentObject = null;
+
+    }
 
 
     finalScore.textContent =
@@ -1624,74 +1705,27 @@ function endGame() {
 
 restart.addEventListener(
     "click",
-    restartGame
+    function() {
+
+        gameOver.style.display =
+            "none";
+
+
+        clearInterval(timer);
+
+
+        startGame();
+
+    }
 );
-
-
-function restartGame() {
-
-    clearInterval(
-        timerInterval
-    );
-
-
-    clearTimeout(
-        spawnTimeout
-    );
-
-
-    score = 0;
-
-    lives = 3;
-
-    round = 1;
-
-    timeLeft = 60;
-
-    objectId = 0;
-
-    gameActive = true;
-
-
-    document
-        .querySelectorAll(
-            ".color-object"
-        )
-        .forEach(
-            object =>
-                object.remove()
-        );
-
-
-    gameOver.style.display =
-        "none";
-
-
-    updateScreen();
-
-
-    createObject();
-
-
-    startTimer();
-
-
-    spawnLoop();
-
-}
 
 
 /* ==========================================
    START
 ========================================== */
 
-updateScreen();
+startGame();
 
-createObject();
-
-startTimer();
-
-spawnLoop();
 
 </script>
 
