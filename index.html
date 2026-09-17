@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
+
+<title>Colour Basket</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    touch-action: none;
+
+    font-family: Arial, sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff4b8,
+            #c8f7e5
+        );
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+#header {
+
+    height: 65px;
+
+    background: white;
+
+    display: flex;
+
+    justify-content: space-around;
+
+    align-items: center;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.15);
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
+}
+
+.stat {
+    text-align: center;
+}
+
+.label {
+    font-size: 11px;
+    color: #777;
+    font-weight: bold;
+}
+
+.value {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   INSTRUCTION
+===================================================== */
+
+#instruction {
+
+    position: fixed;
+
+    top: 72px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background: white;
+
+    padding: 8px 15px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    box-shadow:
+        0 3px 8px rgba(0,0,0,0.15);
+
+    z-index: 900;
+}
+
+
+/* =====================================================
+   GAME AREA
+===================================================== */
+
+#gameArea {
+
+    position: fixed;
+
+    top: 65px;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 150px;
+
+    overflow: hidden;
+
+    touch-action: none;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(255,255,255,0.4),
+            transparent 70%
+        );
+}
+
+
+/* =====================================================
+   OBJECT
+===================================================== */
+
+.gameObject {
+
+    position: absolute;
+
+    width: 75px;
+    height: 75px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 42px;
+
+    background: white;
+
+    box-shadow:
+        0 5px 12px rgba(0,0,0,0.25);
+
+    z-index: 50;
+
+    /*
+       IMPORTANT FOR TOUCH
+    */
+
+    touch-action: none;
+
+    -webkit-user-drag: none;
+
+    transition:
+        transform 0.15s;
+}
+
+
+/* Object being dragged */
+
+.gameObject.dragging {
+
+    transform:
+        translate(-50%, -50%)
+        scale(1.25);
+
+    z-index: 9999;
+
+    box-shadow:
+        0 12px 25px rgba(0,0,0,0.35);
+}
+
+
+/* =====================================================
+   BASKET AREA
+===================================================== */
+
+#basketArea {
+
+    position: fixed;
+
+    bottom: 0;
+
+    left: 0;
+
+    right: 0;
+
+    height: 150px;
+
+    background:
+        rgba(255,255,255,0.95);
+
+    display: flex;
+
+    justify-content:
+        space-around;
+
+    align-items: center;
+
+    padding: 8px;
+
+    gap: 5px;
+
+    box-shadow:
+        0 -4px 12px rgba(0,0,0,0.15);
+
+    z-index: 2000;
+
+    touch-action: none;
+}
+
+
+/* =====================================================
+   BASKET
+===================================================== */
+
+.basket {
+
+    width: 19%;
+
+    height: 105px;
+
+    border-radius:
+        15px 15px 30px 30px;
+
+    border: 5px solid;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    position: relative;
+
+    transition:
+        transform 0.15s,
+        box-shadow 0.15s;
+}
+
+
+/* basket handle */
+
+.basket::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: -14px;
+
+    width: 70%;
+
+    height: 15px;
+
+    border: 5px solid;
+
+    border-bottom: none;
+
+    border-radius:
+        15px 15px 0 0;
+}
+
+
+.basketEmoji {
+
+    font-size: 25px;
+}
+
+
+.basketName {
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    margin-top: 4px;
+}
+
+
+/* Highlight when object is over basket */
+
+.basket.target {
+
+    transform:
+        scale(1.12);
+
+    box-shadow:
+        0 0 25px rgba(0,0,0,0.35);
+}
+
+
+/* COLORS */
+
+.red {
+    border-color: #ff3b30;
+    background: #ffe1de;
+    color: #c91c12;
+}
+
+.blue {
+    border-color: #007aff;
+    background: #dcecff;
+    color: #0063c7;
+}
+
+.green {
+    border-color: #34c759;
+    background: #dcffe5;
+    color: #168b35;
+}
+
+.yellow {
+    border-color: #ffcc00;
+    background: #fff3b5;
+    color: #9c7900;
+}
+
+.purple {
+    border-color: #af52de;
+    background: #f0dcff;
+    color: #7e249f;
+}
+
+
+/* =====================================================
+   FEEDBACK
+===================================================== */
+
+#feedback {
+
+    position: fixed;
+
+    top: 125px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    padding:
+        10px 20px;
+
+    border-radius: 25px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    z-index: 10000;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+.feedbackShow {
+
+    animation:
+        feedbackAnimation 0.9s
+        forwards;
+}
+
+
+.correctFeedback {
+
+    background: #d9ffdf;
+
+    color: #168b35;
+}
+
+
+.wrongFeedback {
+
+    background: #ffe0dd;
+
+    color: #c91c12;
+}
+
+
+@keyframes feedbackAnimation {
+
+    0% {
+        opacity: 0;
+        transform:
+            translate(-50%,20px)
+            scale(0.7);
+    }
+
+    30% {
+        opacity: 1;
+        transform:
+            translate(-50%,0)
+            scale(1.1);
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%,-30px)
+            scale(1);
+    }
+}
+
+
+/* =====================================================
+   START SCREEN
+===================================================== */
+
+#startScreen {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7c7,
+            #c9ffe8
+        );
+
+    z-index: 20000;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: 25px;
+}
+
+
+#startScreen h1 {
+
+    font-size: 36px;
+
+    margin-bottom: 20px;
+}
+
+
+#startScreen p {
+
+    font-size: 19px;
+
+    line-height: 1.5;
+
+    margin-bottom: 30px;
+}
+
+
+#startButton {
+
+    border: none;
+
+    background: #34c759;
+
+    color: white;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    padding:
+        17px 40px;
+
+    border-radius: 40px;
+
+    box-shadow:
+        0 6px 15px
+        rgba(0,0,0,0.2);
+}
+
+
+/* =====================================================
+   RESULT
+===================================================== */
+
+#resultScreen {
+
+    display: none;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: white;
+
+    z-index: 30000;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+}
+
+
+#resultScreen h1 {
+
+    font-size: 38px;
+
+    margin-bottom: 20px;
+}
+
+
+#finalScore {
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    margin-bottom: 15px;
+}
+
+
+#finalStats {
+
+    font-size: 20px;
+
+    line-height: 1.7;
+
+    margin-bottom: 25px;
+}
+
+
+#restartButton {
+
+    border: none;
+
+    background: #007aff;
+
+    color: white;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+    padding:
+        15px 30px;
+
+    border-radius: 30px;
+}
+
+
+/* =====================================================
+   SMALL PHONES
+===================================================== */
+
+@media(max-height:650px) {
+
+    #basketArea {
+        height: 125px;
+    }
+
+    #gameArea {
+        bottom: 125px;
+    }
+
+    .basket {
+        height: 85px;
+    }
+
+    .basketEmoji {
+        font-size: 21px;
+    }
+
+    .gameObject {
+        width: 68px;
+        height: 68px;
+        font-size: 38px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<div id="header">
+
+    <div class="stat">
+        <div class="label">LEVEL</div>
+        <div class="value" id="level">1</div>
+    </div>
+
+    <div class="stat">
+        <div class="label">POINTS</div>
+        <div class="value" id="score">0</div>
+    </div>
+
+    <div class="stat">
+        <div class="label">SORTED</div>
+        <div class="value" id="sorted">0</div>
+    </div>
+
+    <div class="stat">
+        <div class="label">ACCURACY</div>
+        <div class="value" id="accuracy">100%</div>
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     INSTRUCTION
+===================================================== -->
+
+<div id="instruction">
+
+    🧺 Drag the object to the SAME colour basket
+
+</div>
+
+
+<!-- =====================================================
+     GAME AREA
+===================================================== -->
+
+<div id="gameArea"></div>
+
+
+<!-- =====================================================
+     FEEDBACK
+===================================================== -->
+
+<div id="feedback"></div>
+
+
+<!-- =====================================================
+     BASKETS
+===================================================== -->
+
+<div id="basketArea">
+
+    <div
+        class="basket red"
+        data-color="red">
+
+        <div class="basketEmoji">🔴</div>
+
+        <div class="basketName">
+            RED
+        </div>
+
+    </div>
+
+
+    <div
+        class="basket blue"
+        data-color="blue">
+
+        <div class="basketEmoji">🔵</div>
+
+        <div class="basketName">
+            BLUE
+        </div>
+
+    </div>
+
+
+    <div
+        class="basket green"
+        data-color="green">
+
+        <div class="basketEmoji">🟢</div>
+
+        <div class="basketName">
+            GREEN
+        </div>
+
+    </div>
+
+
+    <div
+        class="basket yellow"
+        data-color="yellow">
+
+        <div class="basketEmoji">🟡</div>
+
+        <div class="basketName">
+            YELLOW
+        </div>
+
+    </div>
+
+
+    <div
+        class="basket purple"
+        data-color="purple">
+
+        <div class="basketEmoji">🟣</div>
+
+        <div class="basketName">
+            PURPLE
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     START
+===================================================== -->
+
+<div id="startScreen">
+
+    <h1>🎨 Colour Basket</h1>
+
+    <p>
+
+        Look at the colour of the object.<br><br>
+
+        Touch and hold the object.<br>
+
+        Drag it to the basket with the
+        <b>SAME COLOUR</b>.
+
+    </p>
+
+    <button id="startButton">
+
+        ▶ START
+
+    </button>
+
+</div>
+
+
+<!-- =====================================================
+     RESULT
+===================================================== -->
+
+<div id="resultScreen">
+
+    <h1>🎉 Wonderful!</h1>
+
+    <div id="finalScore"></div>
+
+    <div id="finalStats"></div>
+
+    <button id="restartButton">
+
+        🔄 PLAY AGAIN
+
+    </button>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   COLOUR DATA
+===================================================== */
+
+const colourData = {
+
+    red: [
+        "🍎",
+        "🍓",
+        "🔴",
+        "❤️"
+    ],
+
+    blue: [
+        "🫐",
+        "🔵",
+        "💙",
+        "🧢"
+    ],
+
+    green: [
+        "🍏",
+        "🥝",
+        "🟢",
+        "💚"
+    ],
+
+    yellow: [
+        "🍋",
+        "⭐",
+        "🟡",
+        "🌟"
+    ],
+
+    purple: [
+        "🍇",
+        "🟣",
+        "💜",
+        "🔮"
+    ]
+
+};
+
+
+/* =====================================================
+   GAME VARIABLES
+===================================================== */
+
+let level = 1;
+
+let score = 0;
+
+let sorted = 0;
+
+let attempts = 0;
+
+let correct = 0;
+
+let objects = [];
+
+let currentObject = null;
+
+let offsetX = 0;
+
+let offsetY = 0;
+
+let dragging = false;
+
+let moveTimer = null;
+
+
+/* =====================================================
+   START
+===================================================== */
+
+document
+    .getElementById("startButton")
+    .addEventListener(
+        "touchend",
+        function(event) {
+
+            event.preventDefault();
+
+            startGame();
+
+        }
+    );
+
+
+/* Also allow mouse for testing */
+
+document
+    .getElementById("startButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            startGame();
+
+        }
+    );
+
+
+function startGame() {
+
+    document
+        .getElementById("startScreen")
+        .style.display = "none";
+
+    level = 1;
+
+    score = 0;
+
+    sorted = 0;
+
+    attempts = 0;
+
+    correct = 0;
+
+    updateStats();
+
+    createRound();
+
+}
+
+
+/* =====================================================
+   CREATE ROUND
+===================================================== */
+
+function createRound() {
+
+    const gameArea =
+        document.getElementById(
+            "gameArea"
+        );
+
+
+    /* Clear previous objects */
+
+    gameArea.innerHTML = "";
+
+    objects = [];
+
+
+    /*
+       Start with ONLY 4 objects.
+
+       This keeps the screen simple
+       for elderly users.
+    */
+
+    const number =
+        Math.min(
+            4 + level,
+            8
+        );
+
+
+    const colours =
+        Object.keys(
+            colourData
+        );
+
+
+    for(
+        let i = 0;
+        i < number;
+        i++
+    ) {
+
+        const colour =
+            colours[
+                Math.floor(
+                    Math.random() *
+                    colours.length
+                )
+            ];
+
+
+        const emojiList =
+            colourData[colour];
+
+
+        const emoji =
+            emojiList[
+                Math.floor(
+                    Math.random() *
+                    emojiList.length
+                )
+            ];
+
+
+        const object =
+            document.createElement(
+                "div"
+            );
+
+
+        object.className =
+            "gameObject";
+
+
+        object.textContent =
+            emoji;
+
+
+        object.dataset.color =
+            colour;
+
+
+        /*
+           Random position
+        */
+
+        const maxX =
+            gameArea.clientWidth
+            - 85;
+
+
+        const maxY =
+            gameArea.clientHeight
+            - 90;
+
+
+        const x =
+            10 +
+            Math.random() *
+            Math.max(
+                20,
+                maxX - 20
+            );
+
+
+        const y =
+            20 +
+            Math.random() *
+            Math.max(
+                20,
+                maxY - 30
+            );
+
+
+        object.style.left =
+            x + "px";
+
+
+        object.style.top =
+            y + "px";
+
+
+        /*
+           Slow movement
+        */
+
+        object.dataset.dx =
+            Math.random() > 0.5
+            ? "0.4"
+            : "-0.4";
+
+
+        object.dataset.dy =
+            Math.random() > 0.5
+            ? "0.3"
+            : "-0.3";
+
+
+        gameArea.appendChild(
+            object
+        );
+
+
+        objects.push(
+            object
+        );
+
+
+        /*
+           TOUCH EVENTS
+        */
+
+        object.addEventListener(
+            "touchstart",
+            touchStart,
+            {
+                passive: false
+            }
+        );
+
+
+        object.addEventListener(
+            "touchmove",
+            touchMove,
+            {
+                passive: false
+            }
+        );
+
+
+        object.addEventListener(
+            "touchend",
+            touchEnd,
+            {
+                passive: false
+            }
+        );
+
+    }
+
+
+    startObjectMovement();
+
+}
+
+
+/* =====================================================
+   TOUCH START
+===================================================== */
+
+function touchStart(event) {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+
+    if(
+        dragging
+    ) {
+        return;
+    }
+
+
+    const touch =
+        event.touches[0];
+
+
+    currentObject =
+        event.currentTarget;
+
+
+    dragging = true;
+
+
+    /*
+       Freeze object
+    */
+
+    currentObject.dataset.moving =
+        "false";
+
+
+    /*
+       Get object position
+    */
+
+    const rect =
+        currentObject.getBoundingClientRect();
+
+
+    /*
+       Remember exactly where
+       the finger touched.
+    */
+
+    offsetX =
+        touch.clientX
+        - rect.left;
+
+
+    offsetY =
+        touch.clientY
+        - rect.top;
+
+
+    currentObject.classList.add(
+        "dragging"
+    );
+
+
+    /*
+       Highlight all baskets
+    */
+
+    document
+        .querySelectorAll(
+            ".basket"
+        )
+        .forEach(
+            basket => {
+
+                basket.style.opacity =
+                    "1";
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   TOUCH MOVE
+===================================================== */
+
+function touchMove(event) {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+
+    if(
+        !dragging ||
+        !currentObject
+    ) {
+        return;
+    }
+
+
+    const touch =
+        event.touches[0];
+
+
+    const gameArea =
+        document.getElementById(
+            "gameArea"
+        );
+
+
+    const areaRect =
+        gameArea.getBoundingClientRect();
+
+
+    /*
+       Calculate new position
+    */
+
+    let x =
+        touch.clientX
+        - areaRect.left
+        - offsetX;
+
+
+    let y =
+        touch.clientY
+        - areaRect.top
+        - offsetY;
+
+
+    /*
+       Keep object on screen
+    */
+
+    const maxX =
+        gameArea.clientWidth
+        - currentObject.offsetWidth;
+
+
+    const maxY =
+        gameArea.clientHeight
+        - currentObject.offsetHeight;
+
+
+    x =
+        Math.max(
+            0,
+            Math.min(
+                x,
+                maxX
+            )
+        );
+
+
+    y =
+        Math.max(
+            0,
+            Math.min(
+                y,
+                maxY
+            )
+        );
+
+
+    currentObject.style.left =
+        x + "px";
+
+
+    currentObject.style.top =
+        y + "px";
+
+
+    /*
+       Find basket underneath
+    */
+
+    highlightBasket();
+
+}
+
+
+/* =====================================================
+   TOUCH END
+===================================================== */
+
+function touchEnd(event) {
+
+    event.preventDefault();
+
+    event.stopPropagation();
+
+
+    if(
+        !dragging ||
+        !currentObject
+    ) {
+        return;
+    }
+
+
+    const object =
+        currentObject;
+
+
+    /*
+       Check basket BEFORE
+       clearing currentObject
+    */
+
+    const basket =
+        findBasket(object);
+
+
+    dragging = false;
+
+    currentObject = null;
+
+
+    object.classList.remove(
+        "dragging"
+    );
+
+
+    /*
+       Remove basket highlights
+    */
+
+    document
+        .querySelectorAll(
+            ".basket"
+        )
+        .forEach(
+            basket => {
+
+                basket.classList.remove(
+                    "target"
+                );
+
+            }
+        );
+
+
+    /*
+       Check answer
+    */
+
+    if(basket) {
+
+        checkAnswer(
+            object,
+            basket
+        );
+
+    } else {
+
+        returnObject(
+            object
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   FIND BASKET
+===================================================== */
+
+function findBasket(object) {
+
+    const objectRect =
+        object.getBoundingClientRect();
+
+
+    /*
+       Use CENTER of object
+    */
+
+    const centerX =
+        objectRect.left
+        + objectRect.width / 2;
+
+
+    const centerY =
+        objectRect.top
+        + objectRect.height / 2;
+
+
+    const baskets =
+        document.querySelectorAll(
+            ".basket"
+        );
+
+
+    for(
+        const basket of baskets
+    ) {
+
+        const rect =
+            basket.getBoundingClientRect();
+
+
+        if(
+
+            centerX >= rect.left &&
+
+            centerX <= rect.right &&
+
+            centerY >= rect.top &&
+
+            centerY <= rect.bottom
+
+        ) {
+
+            return basket;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =====================================================
+   HIGHLIGHT BASKET
+===================================================== */
+
+function highlightBasket() {
+
+    if(!currentObject) {
+        return;
+    }
+
+
+    const basket =
+        findBasket(
+            currentObject
+        );
+
+
+    document
+        .querySelectorAll(
+            ".basket"
+        )
+        .forEach(
+            b => {
+
+                b.classList.remove(
+                    "target"
+                );
+
+            }
+        );
+
+
+    if(basket) {
+
+        basket.classList.add(
+            "target"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CHECK ANSWER
+===================================================== */
+
+function checkAnswer(
+    object,
+    basket
+) {
+
+    attempts++;
+
+
+    const objectColour =
+        object.dataset.color;
+
+
+    const basketColour =
+        basket.dataset.color;
+
+
+    /*
+       CORRECT
+    */
+
+    if(
+        objectColour ===
+        basketColour
+    ) {
+
+        correct++;
+
+        sorted++;
+
+        score += 10;
+
+
+        updateStats();
+
+
+        showFeedback(
+            "🎉 Correct! +10",
+            true
+        );
+
+
+        /*
+           Make basket pulse
+        */
+
+        basket.classList.add(
+            "target"
+        );
+
+
+        setTimeout(
+            function() {
+
+                basket.classList.remove(
+                    "target"
+                );
+
+            },
+            400
+        );
+
+
+        /*
+           Object disappears
+        */
+
+        object.style.transform =
+            "scale(0)";
+
+
+        object.style.opacity =
+            "0";
+
+
+        setTimeout(
+            function() {
+
+                object.remove();
+
+
+                objects =
+                    objects.filter(
+                        o => o !== object
+                    );
+
+
+                /*
+                   If round completed
+                */
+
+                if(
+                    objects.length === 0
+                ) {
+
+                    setTimeout(
+                        nextLevel,
+                        700
+                    );
+
+                }
+
+            },
+            300
+        );
+
+    }
+
+    /*
+       WRONG
+    */
+
+    else {
+
+        score =
+            Math.max(
+                0,
+                score - 2
+            );
+
+
+        updateStats();
+
+
+        showFeedback(
+            "❌ Try another basket",
+            false
+        );
+
+
+        /*
+           Return object
+        */
+
+        returnObject(
+            object
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   RETURN OBJECT
+===================================================== */
+
+function returnObject(object) {
+
+    const gameArea =
+        document.getElementById(
+            "gameArea"
+        );
+
+
+    const maxX =
+        gameArea.clientWidth
+        - object.offsetWidth;
+
+
+    const maxY =
+        gameArea.clientHeight
+        - object.offsetHeight;
+
+
+    const x =
+        10 +
+        Math.random() *
+        Math.max(
+            20,
+            maxX - 20
+        );
+
+
+    const y =
+        20 +
+        Math.random() *
+        Math.max(
+            20,
+            maxY - 30
+        );
+
+
+    object.style.left =
+        x + "px";
+
+
+    object.style.top =
+        y + "px";
+
+
+    object.style.transform =
+        "scale(1)";
+
+
+    object.style.opacity =
+        "1";
+
+}
+
+
+/* =====================================================
+   OBJECT MOVEMENT
+===================================================== */
+
+function startObjectMovement() {
+
+    clearInterval(
+        moveTimer
+    );
+
+
+    moveTimer =
+        setInterval(
+            function() {
+
+                if(dragging) {
+                    return;
+                }
+
+
+                const gameArea =
+                    document.getElementById(
+                        "gameArea"
+                    );
+
+
+                objects.forEach(
+                    object => {
+
+                        if(
+                            !document.body.contains(
+                                object
+                            )
+                        ) {
+                            return;
+                        }
+
+
+                        let x =
+                            parseFloat(
+                                object.style.left
+                            );
+
+
+                        let y =
+                            parseFloat(
+                                object.style.top
+                            );
+
+
+                        let dx =
+                            parseFloat(
+                                object.dataset.dx
+                            );
+
+
+                        let dy =
+                            parseFloat(
+                                object.dataset.dy
+                            );
+
+
+                        x += dx;
+
+                        y += dy;
+
+
+                        const maxX =
+                            gameArea.clientWidth
+                            - object.offsetWidth;
+
+
+                        const maxY =
+                            gameArea.clientHeight
+                            - object.offsetHeight;
+
+
+                        if(
+                            x <= 0 ||
+                            x >= maxX
+                        ) {
+
+                            dx *= -1;
+
+                        }
+
+
+                        if(
+                            y <= 20 ||
+                            y >= maxY
+                        ) {
+
+                            dy *= -1;
+
+                        }
+
+
+                        object.dataset.dx =
+                            dx;
+
+
+                        object.dataset.dy =
+                            dy;
+
+
+                        object.style.left =
+                            x + "px";
+
+
+                        object.style.top =
+                            y + "px";
+
+                    }
+                );
+
+            },
+            30
+        );
+
+}
+
+
+/* =====================================================
+   FEEDBACK
+===================================================== */
+
+function showFeedback(
+    text,
+    correctAnswer
+) {
+
+    const feedback =
+        document.getElementById(
+            "feedback"
+        );
+
+
+    feedback.textContent =
+        text;
+
+
+    feedback.className =
+        correctAnswer
+        ? "correctFeedback feedbackShow"
+        : "wrongFeedback feedbackShow";
+
+
+    setTimeout(
+        function() {
+
+            feedback.className = "";
+
+        },
+        900
+    );
+
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+function updateStats() {
+
+    document.getElementById(
+        "level"
+    ).textContent =
+        level;
+
+
+    document.getElementById(
+        "score"
+    ).textContent =
+        score;
+
+
+    document.getElementById(
+        "sorted"
+    ).textContent =
+        sorted;
+
+
+    const accuracy =
+        attempts === 0
+        ? 100
+        : Math.round(
+            (
+                correct /
+                attempts
+            ) * 100
+        );
+
+
+    document.getElementById(
+        "accuracy"
+    ).textContent =
+        accuracy + "%";
+
+}
+
+
+/* =====================================================
+   NEXT LEVEL
+===================================================== */
+
+function nextLevel() {
+
+    if(level >= 5) {
+
+        endGame();
+
+        return;
+
+    }
+
+
+    level++;
+
+    updateStats();
+
+    createRound();
+
+}
+
+
+/* =====================================================
+   END GAME
+===================================================== */
+
+function endGame() {
+
+    clearInterval(
+        moveTimer
+    );
+
+
+    document.getElementById(
+        "finalScore"
+    ).textContent =
+        "🏆 Score: " + score;
+
+
+    const accuracy =
+        attempts === 0
+        ? 100
+        : Math.round(
+            (
+                correct /
+                attempts
+            ) * 100
+        );
+
+
+    document.getElementById(
+        "finalStats"
+    ).innerHTML =
+
+        "Objects Sorted: " +
+        sorted +
+
+        "<br>" +
+
+        "Accuracy: " +
+        accuracy +
+        "%";
+
+
+    document.getElementById(
+        "resultScreen"
+    ).style.display =
+        "flex";
+
+}
+
+
+/* =====================================================
+   RESTART
+===================================================== */
+
+document
+    .getElementById("restartButton")
+    .addEventListener(
+        "touchend",
+        function(event) {
+
+            event.preventDefault();
+
+            document
+                .getElementById(
+                    "resultScreen"
+                )
+                .style.display =
+                "none";
+
+            startGame();
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
