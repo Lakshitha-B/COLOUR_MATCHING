@@ -1,1732 +1,334 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no">
-
-<title>Color Drop Game</title>
-
-<style>
-
-/* ================================
-   BASIC
-================================ */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-}
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-
-    overflow: hidden;
-
-    touch-action: none;
-
-    font-family: Arial, sans-serif;
-}
-
-
-/* ================================
-   GAME
-================================ */
-
-#game {
-
-    position: fixed;
-
-    left: 0;
-    top: 0;
-
-    width: 100vw;
-    height: 100vh;
-
-    overflow: hidden;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #dff6ff,
-            #f8fcff
-        );
-}
-
-
-/* ================================
-   HEADER
-================================ */
-
-#header {
-
-    position: absolute;
-
-    left: 0;
-    top: 0;
-
-    width: 100%;
-    height: 70px;
-
-    background: white;
-
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    box-shadow:
-        0 3px 12px rgba(0,0,0,.15);
-
-    z-index: 1000;
-}
-
-.stat {
-    text-align: center;
-}
-
-.stat small {
-    display: block;
-
-    color: #777;
-
-    font-size: 11px;
-
-    font-weight: bold;
-}
-
-.stat strong {
-
-    display: block;
-
-    margin-top: 3px;
-
-    font-size: 20px;
-}
-
-
-/* ================================
-   INSTRUCTION
-================================ */
-
-#instruction {
-
-    position: absolute;
-
-    top: 82px;
-
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    width: 92%;
-
-    padding: 12px;
-
-    background: white;
-
-    border-radius: 20px;
-
-    text-align: center;
-
-    font-size: 16px;
-
-    font-weight: bold;
-
-    box-shadow:
-        0 4px 12px rgba(0,0,0,.12);
-
-    z-index: 900;
-}
-
-
-/* ================================
-   OBJECT
-================================ */
-
-.color-object {
-
-    position: absolute;
-
-    width: 72px;
-    height: 72px;
-
-    border-radius: 50%;
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-    font-size: 32px;
-
-    border: 4px solid white;
-
-    box-shadow:
-        0 7px 15px rgba(0,0,0,.25),
-        inset 0 5px 7px rgba(255,255,255,.5);
-
-    z-index: 2000;
-
-    /*
-       VERY IMPORTANT
-       Prevent browser scrolling/selection.
-    */
-
-    touch-action: none;
-
-    cursor: grab;
-}
-
-.color-object.dragging {
-
-    transform: scale(1.2);
-
-    box-shadow:
-        0 12px 25px rgba(0,0,0,.35),
-        0 0 0 4px white;
-}
-
-
-/* ================================
-   COLORS
-================================ */
-
-.red {
-    background: #ff4747;
-}
-
-.blue {
-    background: #3485f5;
-}
-
-.yellow {
-    background: #ffd43b;
-}
-
-.green {
-    background: #35c96b;
-}
-
-.purple {
-    background: #a855f7;
-}
-
-
-/* ================================
-   BOTTOM BASKETS
-================================ */
-
-#basketArea {
-
-    position: absolute;
-
-    left: 0;
-    bottom: 0;
-
-    width: 100%;
-    height: 175px;
-
-    background: white;
-
-    display: flex;
-
-    justify-content: space-evenly;
-
-    align-items: flex-end;
-
-    padding:
-        8px
-        3px
-        15px;
-
-    box-shadow:
-        0 -5px 18px rgba(0,0,0,.15);
-
-    z-index: 100;
-}
-
-
-/* ================================
-   BASKET
-================================ */
-
-.basket-container {
-
-    width: 18%;
-
-    max-width: 100px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 5px;
-}
-
-.basket-label {
-
-    font-size: 11px;
-
-    font-weight: bold;
-
-    color: #333;
-}
-
-.basket {
-
-    width: 100%;
-    height: 90px;
-
-    border-radius:
-        12px
-        12px
-        28px
-        28px;
-
-    border: 5px solid white;
-
-    position: relative;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    box-shadow:
-        0 5px 12px rgba(0,0,0,.22),
-        inset 0 5px 8px rgba(255,255,255,.35);
-
-    /*
-       IMPORTANT:
-       Basket must accept the touch.
-    */
-
-    touch-action: none;
-
-    transition:
-        transform .15s,
-        box-shadow .15s;
-}
-
-
-/* Basket opening */
-
-.basket::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: -10px;
-
-    left: 5%;
-
-    width: 90%;
-
-    height: 20px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(0,0,0,.15);
-}
-
-
-/* ================================
-   BASKET HIGHLIGHT
-================================ */
-
-.basket.highlight {
-
-    transform: scale(1.12);
-
-    box-shadow:
-        0 0 0 5px white,
-        0 0 25px rgba(0,0,0,.35);
-}
-
-
-/* ================================
-   MESSAGE
-================================ */
-
-#message {
-
-    position: absolute;
-
-    left: 50%;
-    top: 48%;
-
-    transform:
-        translate(-50%,-50%)
-        scale(.7);
-
-    padding:
-        16px
-        28px;
-
-    background: white;
-
-    border-radius: 25px;
-
-    font-size: 25px;
-
-    font-weight: bold;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    z-index: 5000;
-
-    box-shadow:
-        0 8px 25px rgba(0,0,0,.25);
-
-    transition:
-        .2s;
-}
-
-#message.show {
-
-    opacity: 1;
-
-    transform:
-        translate(-50%,-50%)
-        scale(1);
-}
-
-
-/* ================================
-   GAME OVER
-================================ */
-
-#gameOver {
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        rgba(255,255,255,.97);
-
-    display: none;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    z-index: 10000;
-
-    text-align: center;
-}
-
-#gameOver h1 {
-
-    font-size: 40px;
-
-    margin-bottom: 20px;
-}
-
-#finalScore {
-
-    font-size: 28px;
-
-    font-weight: bold;
-
-    margin-bottom: 25px;
-}
-
-#restart {
-
-    border: none;
-
-    background: #2563eb;
-
-    color: white;
-
-    padding:
-        16px
-        40px;
-
-    border-radius: 30px;
-
-    font-size: 19px;
-
-    font-weight: bold;
-}
-
-
-/* ================================
-   SMALL PHONE
-================================ */
-
-@media(max-width:380px) {
-
-    #header {
-        height: 64px;
-    }
-
-    #instruction {
-
-        top: 75px;
-
-        font-size: 14px;
-
-        padding: 10px;
-    }
-
-    #basketArea {
-
-        height: 155px;
-
-        padding-bottom: 12px;
-    }
-
-    .basket {
-
-        height: 75px;
-    }
-
-    .basket-label {
-
-        font-size: 9px;
-    }
-
-    .color-object {
-
-        width: 64px;
-        height: 64px;
-
-        font-size: 28px;
-    }
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>DropColors - Mobile Arcade</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background: #111;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            max-height: 750px;
+            background: #1e1e2f;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+        }
+        canvas {
+            display: block;
+            background: #181825;
+            width: 100%;
+            flex-grow: 1;
+        }
+        .ui-panel {
+            padding: 12px 20px;
+            background: #252538;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 2px solid #33334d;
+        }
+        .lives {
+            color: #ff5555;
+            letter-spacing: 2px;
+        }
+        /* Overlay Screens */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 15, 25, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #ff79c6;
+            text-shadow: 0 0 10px rgba(255,121,198,0.5);
+        }
+        p {
+            color: #a4a4c1;
+            margin-bottom: 25px;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+        .btn {
+            background: #50fa7b;
+            color: #181825;
+            border: none;
+            padding: 14px 35px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(80,250,123,0.4);
+            transition: transform 0.1s ease;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
-
-
 <body>
 
-
-<div id="game">
-
-
-    <!-- HEADER -->
-
-    <div id="header">
-
-        <div class="stat">
-            <small>SCORE</small>
-            <strong id="score">0</strong>
-        </div>
-
-        <div class="stat">
-            <small>ROUND</small>
-            <strong id="round">1</strong>
-        </div>
-
-        <div class="stat">
-            <small>LIVES</small>
-            <strong id="lives">❤️❤️❤️</strong>
-        </div>
-
-        <div class="stat">
-            <small>TIME</small>
-            <strong id="time">60</strong>
-        </div>
-
+<div id="game-container">
+    <!-- Header UI -->
+    <div class="ui-panel">
+        <div id="score-display">Score: 0</div>
+        <div id="lives-display" class="lives">❤️❤️❤️</div>
     </div>
 
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas"></canvas>
 
-    <!-- INSTRUCTION -->
-
-    <div id="instruction">
-
-        👆 DRAG THE OBJECT INTO THE
-        <b>SAME COLOR</b> BASKET
-
+    <!-- Start Screen -->
+    <div id="start-screen" class="overlay">
+        <h1>DropColors</h1>
+        <p>Swipe or drag horizontally to catch falling blocks with the **matching color lane** at the bottom. Don't let them hit the floor!</p>
+        <button class="btn" onclick="startGame()">PLAY GAME</button>
     </div>
 
-
-    <!-- BASKETS -->
-
-    <div id="basketArea">
-
-
-        <div class="basket-container">
-
-            <div class="basket-label">
-                RED
-            </div>
-
-            <div
-                class="basket red"
-                data-color="red">
-            </div>
-
-        </div>
-
-
-        <div class="basket-container">
-
-            <div class="basket-label">
-                BLUE
-            </div>
-
-            <div
-                class="basket blue"
-                data-color="blue">
-            </div>
-
-        </div>
-
-
-        <div class="basket-container">
-
-            <div class="basket-label">
-                YELLOW
-            </div>
-
-            <div
-                class="basket yellow"
-                data-color="yellow">
-            </div>
-
-        </div>
-
-
-        <div class="basket-container">
-
-            <div class="basket-label">
-                GREEN
-            </div>
-
-            <div
-                class="basket green"
-                data-color="green">
-            </div>
-
-        </div>
-
-
-        <div class="basket-container">
-
-            <div class="basket-label">
-                PURPLE
-            </div>
-
-            <div
-                class="basket purple"
-                data-color="purple">
-            </div>
-
-        </div>
-
-
+    <!-- Game Over Screen -->
+    <div id="gameover-screen" class="overlay hidden">
+        <h1>Game Over</h1>
+        <p>Final Score: <span id="final-score">0</span></p>
+        <button class="btn" onclick="startGame()">PLAY AGAIN</button>
     </div>
-
-
-    <div id="message"></div>
-
-
-    <!-- GAME OVER -->
-
-    <div id="gameOver">
-
-        <h1>🌟 Great Job!</h1>
-
-        <div id="finalScore">
-            Score: 0
-        </div>
-
-        <button id="restart">
-            PLAY AGAIN
-        </button>
-
-    </div>
-
-
 </div>
 
-
-
 <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
+    // Handle high-DPI displays for crisp rendering
+    function resizeCanvas() {
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-/* ==========================================
-   VARIABLES
-========================================== */
+    // Game variables
+    let score = 0;
+    let lives = 3;
+    let gameRunning = false;
+    let dropSpeed = 3;
+    let spawnTimer = 0;
+    let spawnInterval = 90; // frames
 
-let score = 0;
+    // Color definitions (Red, Green, Blue, Yellow)
+    const palette = [
+        { name: 'red', hex: '#ff5555' },
+        { name: 'green', hex: '#50fa7b' },
+        { name: 'blue', hex: '#8be9fd' },
+        { name: 'yellow', hex: '#f1fa8c' }
+    ];
 
-let round = 1;
+    // Catcher setup (divided into 4 lanes or movable bar with color segments)
+    const catcher = {
+        width: 110,
+        height: 24,
+        x: canvas.width / 2 - 55,
+        y: canvas.height - 70,
+        currentColorIndex: 0
+    };
 
-let lives = 3;
+    let blocks = [];
 
-let timeLeft = 60;
+    // Input handlers (Touch and Mouse drag)
+    let isDragging = false;
 
-let gameRunning = true;
-
-let currentObject = null;
-
-let timer = null;
-
-let spawnTimer = null;
-
-let objectCounter = 0;
-
-
-/* ==========================================
-   ELEMENTS
-========================================== */
-
-const game =
-    document.getElementById("game");
-
-const scoreEl =
-    document.getElementById("score");
-
-const roundEl =
-    document.getElementById("round");
-
-const livesEl =
-    document.getElementById("lives");
-
-const timeEl =
-    document.getElementById("time");
-
-const messageEl =
-    document.getElementById("message");
-
-const basketArea =
-    document.getElementById("basketArea");
-
-const gameOver =
-    document.getElementById("gameOver");
-
-const finalScore =
-    document.getElementById("finalScore");
-
-const restart =
-    document.getElementById("restart");
-
-
-/* ==========================================
-   COLORS
-========================================== */
-
-const colors = [
-    "red",
-    "blue",
-    "yellow",
-    "green",
-    "purple"
-];
-
-
-const emoji = {
-
-    red: "🍎",
-
-    blue: "💧",
-
-    yellow: "⭐",
-
-    green: "🍃",
-
-    purple: "🫐"
-
-};
-
-
-/* ==========================================
-   UPDATE UI
-========================================== */
-
-function updateUI() {
-
-    scoreEl.textContent =
-        score;
-
-    roundEl.textContent =
-        round;
-
-    timeEl.textContent =
-        timeLeft;
-
-
-    let hearts = "";
-
-    for (
-        let i = 0;
-        i < 3;
-        i++
-    ) {
-
-        hearts +=
-            i < lives
-            ? "❤️"
-            : "🖤";
-
+    function handleTouchMove(e) {
+        if (!gameRunning) return;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const rect = canvas.getBoundingClientRect();
+        const touchX = clientX - rect.left;
+        catcher.x = touchX - catcher.width / 2;
+        
+        // Boundaries
+        if (catcher.x < 0) catcher.x = 0;
+        if (catcher.x > canvas.width - catcher.width) catcher.x = canvas.width - catcher.width;
     }
 
-    livesEl.textContent =
-        hearts;
-}
-
-
-/* ==========================================
-   CREATE OBJECT
-========================================== */
-
-function createObject() {
-
-    if (!gameRunning)
-        return;
-
-
-    /*
-       Remove old object first.
-
-       This makes the game easier to play
-       for dementia/cognitive training:
-       one object at a time.
-    */
-
-    if (currentObject) {
-
-        currentObject.remove();
-
-        currentObject = null;
-
-    }
-
-
-    const color =
-        colors[
-            Math.floor(
-                Math.random()
-                * colors.length
-            )
-        ];
-
-
-    const object =
-        document.createElement("div");
-
-
-    object.className =
-        "color-object " + color;
-
-
-    object.dataset.color =
-        color;
-
-
-    object.dataset.id =
-        objectCounter++;
-
-
-    object.innerHTML =
-        emoji[color];
-
-
-    /*
-       Start position.
-    */
-
-    const objectWidth = 72;
-
-
-    const maxX =
-        window.innerWidth
-        - objectWidth
-        - 10;
-
-
-    const x =
-        Math.random()
-        * Math.max(
-            10,
-            maxX
-        );
-
-
-    object.style.left =
-        x + "px";
-
-
-    object.style.top =
-        "155px";
-
-
-    game.appendChild(object);
-
-
-    currentObject =
-        object;
-
-
-    enableTouchDrag(object);
-
-
-    startFalling(object);
-
-}
-
-
-/* ==========================================
-   FALLING
-========================================== */
-
-function startFalling(object) {
-
-    let y =
-        parseFloat(
-            object.style.top
-        );
-
-
-    let lastTime =
-        performance.now();
-
-
-    function animate(now) {
-
-        if (!object.isConnected)
-            return;
-
-
-        /*
-           STOP FALLING WHILE DRAGGING
-        */
-
-        if (
-            object.classList
-                .contains("dragging")
-        ) {
-
-            lastTime = now;
-
-            requestAnimationFrame(
-                animate
-            );
-
-            return;
-
-        }
-
-
-        const delta =
-            (now - lastTime)
-            / 1000;
-
-
-        lastTime =
-            now;
-
-
-        y +=
-            (35 + round * 2)
-            * delta;
-
-
-        /*
-           Don't allow object to enter
-           basket area automatically.
-        */
-
-        const basketTop =
-            basketArea.getBoundingClientRect()
-                .top;
-
-
-        if (
-            y + object.offsetHeight
-            >= basketTop
-        ) {
-
-            object.remove();
-
-            currentObject = null;
-
-            loseLife();
-
-            if (gameRunning) {
-
-                setTimeout(
-                    createObject,
-                    300
-                );
-
-            }
-
-            return;
-
-        }
-
-
-        object.style.top =
-            y + "px";
-
-
-        requestAnimationFrame(
-            animate
-        );
-
-    }
-
-
-    requestAnimationFrame(
-        animate
-    );
-}
-
-
-/* ==========================================
-   MOBILE TOUCH DRAG
-========================================== */
-
-function enableTouchDrag(object) {
-
-
-    let dragging = false;
-
-    let offsetX = 0;
-
-    let offsetY = 0;
-
-
-    /*
-       TOUCH START
-    */
-
-    object.addEventListener(
-        "touchstart",
-        function(event) {
-
-            if (!gameRunning)
-                return;
-
-
-            /*
-               Prevent scrolling.
-            */
-
-            event.preventDefault();
-
-
-            const touch =
-                event.touches[0];
-
-
-            const rect =
-                object.getBoundingClientRect();
-
-
-            offsetX =
-                touch.clientX
-                - rect.left;
-
-
-            offsetY =
-                touch.clientY
-                - rect.top;
-
-
-            dragging = true;
-
-
-            object.classList.add(
-                "dragging"
-            );
-
-
-            /*
-               Bring object completely
-               above everything.
-            */
-
-            object.style.zIndex =
-                "9999";
-
-        },
-        {
-            passive: false
-        }
-    );
-
-
-    /*
-       TOUCH MOVE
-    */
-
-    object.addEventListener(
-        "touchmove",
-        function(event) {
-
-            if (!dragging)
-                return;
-
-
-            event.preventDefault();
-
-
-            const touch =
-                event.touches[0];
-
-
-            /*
-               Calculate position based
-               directly on finger.
-            */
-
-            let x =
-                touch.clientX
-                - offsetX;
-
-
-            let y =
-                touch.clientY
-                - offsetY;
-
-
-            /*
-               Keep inside screen.
-            */
-
-            x =
-                Math.max(
-                    0,
-                    Math.min(
-                        x,
-                        window.innerWidth
-                        - object.offsetWidth
-                    )
-                );
-
-
-            y =
-                Math.max(
-                    70,
-                    Math.min(
-                        y,
-                        window.innerHeight
-                        - object.offsetHeight
-                    )
-                );
-
-
-            object.style.left =
-                x + "px";
-
-
-            object.style.top =
-                y + "px";
-
-
-            /*
-               Check basket continuously.
-            */
-
-            highlightBasketAt(
-                touch.clientX,
-                touch.clientY
-            );
-
-        },
-        {
-            passive: false
-        }
-    );
-
-
-    /*
-       TOUCH END
-    */
-
-    object.addEventListener(
-        "touchend",
-        function(event) {
-
-            if (!dragging)
-                return;
-
-
-            event.preventDefault();
-
-
-            dragging = false;
-
-
-            object.classList.remove(
-                "dragging"
-            );
-
-
-            object.style.zIndex =
-                "2000";
-
-
-            removeBasketHighlight();
-
-
-            /*
-               IMPORTANT:
-               Get the FINAL finger position.
-            */
-
-            const touch =
-                event.changedTouches[0];
-
-
-            const basket =
-                findBasketAt(
-                    touch.clientX,
-                    touch.clientY
-                );
-
-
-            /*
-               WE FOUND A BASKET
-            */
-
-            if (basket) {
-
-                processDrop(
-                    object,
-                    basket
-                );
-
-            } else {
-
-                /*
-                   No basket.
-                   Return object.
-                */
-
-                returnObject(object);
-
-            }
-
-        },
-        {
-            passive: false
-        }
-    );
-
-
-    /*
-       TOUCH CANCEL
-    */
-
-    object.addEventListener(
-        "touchcancel",
-        function() {
-
-            dragging = false;
-
-            object.classList.remove(
-                "dragging"
-            );
-
-            removeBasketHighlight();
-
-        }
-    );
-
-}
-
-
-/* ==========================================
-   FIND BASKET USING FINGER
-========================================== */
-
-function findBasketAt(
-    x,
-    y
-) {
-
-    const baskets =
-        document.querySelectorAll(
-            ".basket"
-        );
-
-
-    for (
-        const basket of baskets
-    ) {
-
-        const rect =
-            basket.getBoundingClientRect();
-
-
-        /*
-           LARGE DROP ZONE.
-
-           The user doesn't need to
-           place the object perfectly.
-        */
-
-        const padding = 25;
-
-
-        if (
-
-            x >=
-            rect.left - padding
-
-            &&
-
-            x <=
-            rect.right + padding
-
-            &&
-
-            y >=
-            rect.top - padding
-
-            &&
-
-            y <=
-            rect.bottom + padding
-
-        ) {
-
-            return basket;
-
-        }
-
-    }
-
-
-    return null;
-}
-
-
-/* ==========================================
-   HIGHLIGHT BASKET
-========================================== */
-
-function highlightBasketAt(
-    x,
-    y
-) {
-
-    removeBasketHighlight();
-
-
-    const basket =
-        findBasketAt(x, y);
-
-
-    if (basket) {
-
-        basket.classList.add(
-            "highlight"
-        );
-
-    }
-
-}
-
-
-/* ==========================================
-   REMOVE HIGHLIGHT
-========================================== */
-
-function removeBasketHighlight() {
-
-    document
-        .querySelectorAll(
-            ".basket"
-        )
-        .forEach(
-            basket => {
-
-                basket.classList.remove(
-                    "highlight"
-                );
-
-            }
-        );
-
-}
-
-
-/* ==========================================
-   PROCESS DROP
-========================================== */
-
-function processDrop(
-    object,
-    basket
-) {
-
-    const objectColor =
-        object.dataset.color;
-
-
-    const basketColor =
-        basket.dataset.color;
-
-
-    /*
-       CORRECT COLOR
-    */
-
-    if (
-        objectColor === basketColor
-    ) {
-
-        score += 10;
-
-        round++;
-
-
+    canvas.addEventListener('mousedown', (e) => { isDragging = true; handleTouchMove(e); });
+    window.addEventListener('mousemove', (e) => { if (isDragging) handleTouchMove(e); });
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    canvas.addEventListener('touchstart', (e) => { isDragging = true; handleTouchMove(e); e.preventDefault(); }, {passive: false});
+    window.addEventListener('touchmove', (e) => { if (isDragging) handleTouchMove(e); e.preventDefault(); }, {passive: false});
+    window.addEventListener('touchend', () => { isDragging = false; });
+
+    // Tap catcher to cycle color (Alternative/Bonus mobile control mechanic)
+    canvas.addEventListener('click', () => {
+        if (!gameRunning) return;
+        catcher.currentColorIndex = (catcher.currentColorIndex + 1) % palette.length;
+    });
+
+    function startGame() {
+        score = 0;
+        lives = 3;
+        dropSpeed = 3.5;
+        spawnInterval = 80;
+        blocks = [];
+        gameRunning = true;
+        
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('gameover-screen').classList.add('hidden');
         updateUI();
-
-
-        basket.classList.add(
-            "highlight"
-        );
-
-
-        showMessage(
-            "✓ CORRECT! +10",
-            true
-        );
-
-
-        /*
-           Remove object.
-        */
-
-        object.remove();
-
-
-        currentObject =
-            null;
-
-
-        setTimeout(
-            function() {
-
-                basket.classList.remove(
-                    "highlight"
-                );
-
-            },
-            400
-        );
-
-
-        /*
-           New object.
-        */
-
-        setTimeout(
-            createObject,
-            500
-        );
-
-
-    } else {
-
-        /*
-           WRONG COLOR
-        */
-
-        score =
-            Math.max(
-                0,
-                score - 5
-            );
-
-
-        updateUI();
-
-
-        showMessage(
-            "✗ TRY AGAIN",
-            false
-        );
-
-
-        returnObject(object);
-
+        
+        requestAnimationFrame(gameLoop);
     }
 
-}
+    function gameOver() {
+        gameRunning = false;
+        document.getElementById('final-score').innerText = score;
+        document.getElementById('gameover-screen').classList.remove('hidden');
+    }
 
+    function updateUI() {
+        document.getElementById('score-display').innerText = `Score: ${score}`;
+        document.getElementById('lives-display').innerText = '❤️'.repeat(lives);
+    }
 
-/* ==========================================
-   RETURN OBJECT
-========================================== */
+    function spawnBlock() {
+        const colorObj = palette[Math.floor(Math.random() * palette.length)];
+        const size = 32;
+        const x = Math.random() * (canvas.width - size);
+        blocks.push({
+            x: x,
+            y: -size,
+            size: size,
+            color: colorObj
+        });
+    }
 
-function returnObject(object) {
+    function update() {
+        if (!gameRunning) return;
 
-    if (!object.isConnected)
-        return;
-
-
-    object.animate(
-        [
-            {
-                transform:
-                    "scale(1)"
-            },
-            {
-                transform:
-                    "scale(1.25)"
-            },
-            {
-                transform:
-                    "scale(1)"
-            }
-        ],
-        {
-            duration: 400
+        // Spawner logic
+        spawnTimer++;
+        if (spawnTimer >= spawnInterval) {
+            spawnBlock();
+            spawnTimer = 0;
+            // Progressive difficulty: speed up gradually
+            if (spawnInterval > 35) spawnInterval -= 1;
+            dropSpeed += 0.015;
         }
-    );
 
+        // Update blocks
+        for (let i = blocks.length - 1; i >= 0; i--) {
+            let b = blocks[i];
+            b.y += dropSpeed;
 
-    setTimeout(
-        function() {
-
+            // Check collision with catcher
             if (
-                object.isConnected
+                b.y + b.size >= catcher.y &&
+                b.y <= catcher.y + catcher.height &&
+                b.x + b.size >= catcher.x &&
+                b.x <= catcher.x + catcher.width
             ) {
-
-                object.style.left =
-                    (
-                        Math.random()
-                        *
-                        (
-                            window.innerWidth
-                            - object.offsetWidth
-                            - 10
-                        )
-                    ) + "px";
-
-
-                object.style.top =
-                    "155px";
-
+                // Check if color matches catcher's current color
+                if (b.color.name === palette[catcher.currentColorIndex].name) {
+                    score += 10;
+                } else {
+                    lives--;
+                }
+                updateUI();
+                blocks.splice(i, 1);
+                if (lives <= 0) {
+                    gameOver();
+                    return;
+                }
+                continue;
             }
 
-        },
-        300
-    );
-
-}
-
-
-/* ==========================================
-   MESSAGE
-========================================== */
-
-function showMessage(
-    text,
-    correct
-) {
-
-    messageEl.textContent =
-        text;
-
-
-    messageEl.style.color =
-        correct
-        ? "#16a34a"
-        : "#dc2626";
-
-
-    messageEl.classList.add(
-        "show"
-    );
-
-
-    setTimeout(
-        function() {
-
-            messageEl.classList.remove(
-                "show"
-            );
-
-        },
-        700
-    );
-
-}
-
-
-/* ==========================================
-   LOSE LIFE
-========================================== */
-
-function loseLife() {
-
-    if (!gameRunning)
-        return;
-
-
-    lives--;
-
-
-    updateUI();
-
-
-    if (lives <= 0) {
-
-        endGame();
-
-    }
-
-}
-
-
-/* ==========================================
-   TIMER
-========================================== */
-
-function startTimer() {
-
-    timer =
-        setInterval(
-            function() {
-
-                if (!gameRunning)
-                    return;
-
-
-                timeLeft--;
-
-
+            // Missed block (hit bottom)
+            if (b.y > canvas.height) {
+                blocks.splice(i, 1);
+                lives--;
                 updateUI();
-
-
-                if (
-                    timeLeft <= 0
-                ) {
-
-                    endGame();
-
+                if (lives <= 0) {
+                    gameOver();
+                    return;
                 }
-
-            },
-            1000
-        );
-
-}
-
-
-/* ==========================================
-   GAME LOOP
-========================================== */
-
-function startGame() {
-
-    score = 0;
-
-    round = 1;
-
-    lives = 3;
-
-    timeLeft = 60;
-
-    gameRunning = true;
-
-
-    updateUI();
-
-
-    createObject();
-
-
-    startTimer();
-
-}
-
-
-/* ==========================================
-   END GAME
-========================================== */
-
-function endGame() {
-
-    gameRunning = false;
-
-
-    clearInterval(timer);
-
-    clearTimeout(spawnTimer);
-
-
-    if (currentObject) {
-
-        currentObject.remove();
-
-        currentObject = null;
-
+            }
+        }
     }
 
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    finalScore.textContent =
-        "Score: " + score;
+        // Draw falling blocks
+        blocks.forEach(b => {
+            ctx.fillStyle = b.color.hex;
+            ctx.beginPath();
+            ctx.roundRect(b.x, b.y, b.size, b.size, 8);
+            ctx.fill();
+            // Inner glow effect
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        });
 
+        // Draw Catcher (Dynamic color bar)
+        const activeColor = palette[catcher.currentColorIndex];
+        ctx.fillStyle = activeColor.hex;
+        ctx.beginPath();
+        ctx.roundRect(catcher.x, catcher.y, catcher.width, catcher.height, 12);
+        ctx.fill();
 
-    gameOver.style.display =
-        "flex";
+        // Catcher border & indicator text
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
 
-}
-
-
-/* ==========================================
-   RESTART
-========================================== */
-
-restart.addEventListener(
-    "click",
-    function() {
-
-        gameOver.style.display =
-            "none";
-
-
-        clearInterval(timer);
-
-
-        startGame();
-
+        ctx.fillStyle = '#181825';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText("TAP TO SWITCH", catcher.x + catcher.width / 2, catcher.y + 16);
     }
-);
 
-
-/* ==========================================
-   START
-========================================== */
-
-startGame();
-
-
+    function gameLoop() {
+        if (!gameRunning) return;
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
 </script>
 
 </body>
