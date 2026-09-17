@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width,
-               initial-scale=1.0,
-               maximum-scale=1.0,
-               user-scalable=no">
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
 
-<title>Colour Basket</title>
+<title>Colour Basket Game</title>
 
 <style>
 
@@ -20,34 +22,40 @@
 
     user-select: none;
     -webkit-user-select: none;
-    -webkit-touch-callout: none;
+
+    touch-action: none;
 }
 
 html,
 body {
+
     width: 100%;
     height: 100%;
 
     overflow: hidden;
 
-    touch-action: none;
-
     font-family: Arial, sans-serif;
 
     background:
-        linear-gradient(
-            135deg,
-            #fff4b8,
-            #c8f7e5
-        );
+    linear-gradient(
+        135deg,
+        #fff5bd,
+        #c9f7e5
+    );
 }
 
 
-/* =====================================================
+/* ================================
    HEADER
-===================================================== */
+================================ */
 
 #header {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
 
     height: 65px;
 
@@ -59,53 +67,57 @@ body {
 
     align-items: center;
 
-    box-shadow:
-        0 3px 10px rgba(0,0,0,0.15);
-
-    position: fixed;
-
-    top: 0;
-    left: 0;
-    right: 0;
-
     z-index: 1000;
+
+    box-shadow:
+    0 3px 10px
+    rgba(0,0,0,0.15);
 }
+
 
 .stat {
     text-align: center;
 }
 
+
 .label {
+
     font-size: 11px;
+
     color: #777;
+
     font-weight: bold;
 }
+
 
 .value {
+
     font-size: 20px;
+
     font-weight: bold;
 }
 
 
-/* =====================================================
+/* ================================
    INSTRUCTION
-===================================================== */
+================================ */
 
 #instruction {
 
     position: fixed;
 
-    top: 72px;
+    top: 73px;
 
     left: 50%;
 
-    transform: translateX(-50%);
+    transform:
+    translateX(-50%);
 
     background: white;
 
-    padding: 8px 15px;
+    padding: 9px 15px;
 
-    border-radius: 20px;
+    border-radius: 25px;
 
     font-size: 14px;
 
@@ -113,18 +125,19 @@ body {
 
     white-space: nowrap;
 
-    box-shadow:
-        0 3px 8px rgba(0,0,0,0.15);
-
     z-index: 900;
+
+    box-shadow:
+    0 3px 8px
+    rgba(0,0,0,0.15);
 }
 
 
-/* =====================================================
-   GAME AREA
-===================================================== */
+/* ================================
+   PLAY AREA
+================================ */
 
-#gameArea {
+#playArea {
 
     position: fixed;
 
@@ -134,33 +147,29 @@ body {
 
     right: 0;
 
-    bottom: 150px;
+    bottom: 145px;
 
     overflow: hidden;
 
-    touch-action: none;
-
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(255,255,255,0.4),
-            transparent 70%
-        );
+    z-index: 10;
 }
 
 
-/* =====================================================
+/* ================================
    OBJECT
-===================================================== */
+================================ */
 
-.gameObject {
+.object {
 
     position: absolute;
 
-    width: 75px;
-    height: 75px;
+    width: 78px;
+
+    height: 78px;
 
     border-radius: 50%;
+
+    background: white;
 
     display: flex;
 
@@ -168,46 +177,50 @@ body {
 
     justify-content: center;
 
-    font-size: 42px;
-
-    background: white;
+    font-size: 44px;
 
     box-shadow:
-        0 5px 12px rgba(0,0,0,0.25);
+    0 5px 15px
+    rgba(0,0,0,0.25);
 
-    z-index: 50;
+    z-index: 100;
 
     /*
-       IMPORTANT FOR TOUCH
+       VERY IMPORTANT
     */
 
     touch-action: none;
 
-    -webkit-user-drag: none;
+    -webkit-user-select: none;
 
     transition:
-        transform 0.15s;
+    transform 0.15s;
 }
 
 
-/* Object being dragged */
+/* object being dragged */
 
-.gameObject.dragging {
+.object.dragging {
+
+    position: fixed !important;
 
     transform:
-        translate(-50%, -50%)
-        scale(1.25);
+    translate(-50%, -50%)
+    scale(1.2);
 
-    z-index: 9999;
+    z-index: 99999 !important;
+
+    pointer-events: none;
 
     box-shadow:
-        0 12px 25px rgba(0,0,0,0.35);
+    0 12px 25px
+    rgba(0,0,0,0.35);
 }
 
 
-/* =====================================================
+/* ================================
    BASKET AREA
-===================================================== */
+================================ */
 
 #basketArea {
 
@@ -219,63 +232,62 @@ body {
 
     right: 0;
 
-    height: 150px;
+    height: 145px;
 
     background:
-        rgba(255,255,255,0.95);
+    rgba(255,255,255,0.97);
 
     display: flex;
 
-    justify-content:
-        space-around;
-
     align-items: center;
+
+    justify-content:
+    space-evenly;
 
     padding: 8px;
 
     gap: 5px;
 
+    z-index: 5000;
+
     box-shadow:
-        0 -4px 12px rgba(0,0,0,0.15);
-
-    z-index: 2000;
-
-    touch-action: none;
+    0 -4px 12px
+    rgba(0,0,0,0.15);
 }
 
 
-/* =====================================================
+/* ================================
    BASKET
-===================================================== */
+================================ */
 
 .basket {
 
     width: 19%;
 
-    height: 105px;
-
-    border-radius:
-        15px 15px 30px 30px;
+    height: 100px;
 
     border: 5px solid;
+
+    border-radius:
+    15px 15px 30px 30px;
 
     display: flex;
 
     flex-direction: column;
 
-    justify-content: center;
-
     align-items: center;
+
+    justify-content: center;
 
     position: relative;
 
     transition:
-        transform 0.15s,
-        box-shadow 0.15s;
+    transform 0.15s,
+    box-shadow 0.15s;
 }
 
 
-/* basket handle */
+/* Basket handle */
 
 .basket::before {
 
@@ -294,15 +306,19 @@ body {
     border-bottom: none;
 
     border-radius:
-        15px 15px 0 0;
+    15px 15px 0 0;
 }
 
 
-.basketEmoji {
+/* Basket icon */
+
+.basketIcon {
 
     font-size: 25px;
 }
 
+
+/* Basket name */
 
 .basketName {
 
@@ -310,58 +326,80 @@ body {
 
     font-weight: bold;
 
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
 
-/* Highlight when object is over basket */
+/* Highlight */
 
-.basket.target {
+.basket.highlight {
 
     transform:
-        scale(1.12);
+    scale(1.15);
 
     box-shadow:
-        0 0 25px rgba(0,0,0,0.35);
+    0 0 25px
+    rgba(0,0,0,0.45);
 }
 
 
-/* COLORS */
+/* ================================
+   COLORS
+================================ */
 
 .red {
+
     border-color: #ff3b30;
-    background: #ffe1de;
-    color: #c91c12;
+
+    background: #ffe0dd;
+
+    color: #c91d13;
 }
+
 
 .blue {
+
     border-color: #007aff;
+
     background: #dcecff;
-    color: #0063c7;
+
+    color: #0062c7;
 }
 
+
 .green {
+
     border-color: #34c759;
+
     background: #dcffe5;
+
     color: #168b35;
 }
 
+
 .yellow {
+
     border-color: #ffcc00;
-    background: #fff3b5;
-    color: #9c7900;
+
+    background: #fff2b3;
+
+    color: #967500;
 }
+
 
 .purple {
+
     border-color: #af52de;
-    background: #f0dcff;
-    color: #7e249f;
+
+    background: #efd9ff;
+
+    color: #7d239f;
 }
 
 
-/* =====================================================
+/* ================================
    FEEDBACK
-===================================================== */
+================================ */
 
 #feedback {
 
@@ -372,10 +410,10 @@ body {
     left: 50%;
 
     transform:
-        translateX(-50%);
+    translateX(-50%);
 
     padding:
-        10px 20px;
+    10px 20px;
 
     border-radius: 25px;
 
@@ -383,65 +421,72 @@ body {
 
     font-weight: bold;
 
-    z-index: 10000;
+    z-index: 20000;
 
     opacity: 0;
 
     pointer-events: none;
 }
 
-.feedbackShow {
+
+.show {
 
     animation:
-        feedbackAnimation 0.9s
-        forwards;
+    feedback 0.9s
+    forwards;
 }
 
 
-.correctFeedback {
+.correct {
 
-    background: #d9ffdf;
+    background: #dcffe3;
 
     color: #168b35;
 }
 
 
-.wrongFeedback {
+.wrong {
 
     background: #ffe0dd;
 
-    color: #c91c12;
+    color: #c91d13;
 }
 
 
-@keyframes feedbackAnimation {
+@keyframes feedback {
 
     0% {
+
         opacity: 0;
+
         transform:
-            translate(-50%,20px)
-            scale(0.7);
+        translate(-50%,20px)
+        scale(0.7);
     }
 
     30% {
+
         opacity: 1;
+
         transform:
-            translate(-50%,0)
-            scale(1.1);
+        translate(-50%,0)
+        scale(1.1);
     }
 
     100% {
+
         opacity: 0;
+
         transform:
-            translate(-50%,-30px)
-            scale(1);
+        translate(-50%,-30px)
+        scale(1);
     }
 }
 
 
-/* =====================================================
+/* ================================
    START SCREEN
-===================================================== */
+================================ */
 
 #startScreen {
 
@@ -449,22 +494,22 @@ body {
 
     inset: 0;
 
-    background:
-        linear-gradient(
-            135deg,
-            #fff7c7,
-            #c9ffe8
-        );
+    z-index: 30000;
 
-    z-index: 20000;
+    background:
+    linear-gradient(
+        135deg,
+        #fff5bd,
+        #c9f7e5
+    );
 
     display: flex;
 
     flex-direction: column;
 
-    justify-content: center;
-
     align-items: center;
+
+    justify-content: center;
 
     text-align: center;
 
@@ -482,7 +527,7 @@ body {
 
 #startScreen p {
 
-    font-size: 19px;
+    font-size: 18px;
 
     line-height: 1.5;
 
@@ -494,6 +539,11 @@ body {
 
     border: none;
 
+    padding:
+    17px 40px;
+
+    border-radius: 40px;
+
     background: #34c759;
 
     color: white;
@@ -501,39 +551,30 @@ body {
     font-size: 22px;
 
     font-weight: bold;
-
-    padding:
-        17px 40px;
-
-    border-radius: 40px;
-
-    box-shadow:
-        0 6px 15px
-        rgba(0,0,0,0.2);
 }
 
 
-/* =====================================================
+/* ================================
    RESULT
-===================================================== */
+================================ */
 
 #resultScreen {
-
-    display: none;
 
     position: fixed;
 
     inset: 0;
 
+    z-index: 40000;
+
     background: white;
 
-    z-index: 30000;
+    display: none;
 
     flex-direction: column;
 
-    justify-content: center;
-
     align-items: center;
+
+    justify-content: center;
 
     text-align: center;
 }
@@ -553,7 +594,7 @@ body {
 
     font-weight: bold;
 
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 
@@ -571,6 +612,11 @@ body {
 
     border: none;
 
+    padding:
+    15px 30px;
+
+    border-radius: 30px;
+
     background: #007aff;
 
     color: white;
@@ -578,115 +624,156 @@ body {
     font-size: 20px;
 
     font-weight: bold;
-
-    padding:
-        15px 30px;
-
-    border-radius: 30px;
 }
 
 
-/* =====================================================
-   SMALL PHONES
-===================================================== */
+/* ================================
+   SMALL PHONE
+================================ */
 
 @media(max-height:650px) {
 
     #basketArea {
+
         height: 125px;
     }
 
-    #gameArea {
+    #playArea {
+
         bottom: 125px;
     }
 
     .basket {
+
         height: 85px;
     }
 
-    .basketEmoji {
-        font-size: 21px;
+    .object {
+
+        width: 70px;
+
+        height: 70px;
+
+        font-size: 40px;
     }
 
-    .gameObject {
-        width: 68px;
-        height: 68px;
-        font-size: 38px;
-    }
 }
 
 </style>
+
 </head>
 
 
 <body>
 
 
-<!-- =====================================================
+<!-- ================================
      HEADER
-===================================================== -->
+================================ -->
 
 <div id="header">
 
     <div class="stat">
-        <div class="label">LEVEL</div>
-        <div class="value" id="level">1</div>
+
+        <div class="label">
+            LEVEL
+        </div>
+
+        <div
+        class="value"
+        id="level">
+            1
+        </div>
+
     </div>
 
-    <div class="stat">
-        <div class="label">POINTS</div>
-        <div class="value" id="score">0</div>
-    </div>
 
     <div class="stat">
-        <div class="label">SORTED</div>
-        <div class="value" id="sorted">0</div>
+
+        <div class="label">
+            POINTS
+        </div>
+
+        <div
+        class="value"
+        id="score">
+            0
+        </div>
+
     </div>
 
+
     <div class="stat">
-        <div class="label">ACCURACY</div>
-        <div class="value" id="accuracy">100%</div>
+
+        <div class="label">
+            SORTED
+        </div>
+
+        <div
+        class="value"
+        id="sorted">
+            0
+        </div>
+
+    </div>
+
+
+    <div class="stat">
+
+        <div class="label">
+            ACCURACY
+        </div>
+
+        <div
+        class="value"
+        id="accuracy">
+            100%
+        </div>
+
     </div>
 
 </div>
 
 
-<!-- =====================================================
+<!-- ================================
      INSTRUCTION
-===================================================== -->
+================================ -->
 
 <div id="instruction">
 
-    🧺 Drag the object to the SAME colour basket
+    🎨 Drag the object into the SAME colour basket
 
 </div>
 
 
-<!-- =====================================================
-     GAME AREA
-===================================================== -->
+<!-- ================================
+     PLAY AREA
+================================ -->
 
-<div id="gameArea"></div>
+<div id="playArea"></div>
 
 
-<!-- =====================================================
+<!-- ================================
      FEEDBACK
-===================================================== -->
+================================ -->
 
 <div id="feedback"></div>
 
 
-<!-- =====================================================
+<!-- ================================
      BASKETS
-===================================================== -->
+================================ -->
 
 <div id="basketArea">
 
-    <div
-        class="basket red"
-        data-color="red">
 
-        <div class="basketEmoji">🔴</div>
+    <div
+    class="basket red"
+    data-color="red">
+
+        <div class="basketIcon">
+            🔴
+        </div>
 
         <div class="basketName">
             RED
@@ -696,10 +783,12 @@ body {
 
 
     <div
-        class="basket blue"
-        data-color="blue">
+    class="basket blue"
+    data-color="blue">
 
-        <div class="basketEmoji">🔵</div>
+        <div class="basketIcon">
+            🔵
+        </div>
 
         <div class="basketName">
             BLUE
@@ -709,10 +798,12 @@ body {
 
 
     <div
-        class="basket green"
-        data-color="green">
+    class="basket green"
+    data-color="green">
 
-        <div class="basketEmoji">🟢</div>
+        <div class="basketIcon">
+            🟢
+        </div>
 
         <div class="basketName">
             GREEN
@@ -722,10 +813,12 @@ body {
 
 
     <div
-        class="basket yellow"
-        data-color="yellow">
+    class="basket yellow"
+    data-color="yellow">
 
-        <div class="basketEmoji">🟡</div>
+        <div class="basketIcon">
+            🟡
+        </div>
 
         <div class="basketName">
             YELLOW
@@ -735,10 +828,12 @@ body {
 
 
     <div
-        class="basket purple"
-        data-color="purple">
+    class="basket purple"
+    data-color="purple">
 
-        <div class="basketEmoji">🟣</div>
+        <div class="basketIcon">
+            🟣
+        </div>
 
         <div class="basketName">
             PURPLE
@@ -749,41 +844,50 @@ body {
 </div>
 
 
-<!-- =====================================================
-     START
-===================================================== -->
+<!-- ================================
+     START SCREEN
+================================ -->
 
 <div id="startScreen">
 
-    <h1>🎨 Colour Basket</h1>
+    <h1>
+        🎨 Colour Basket
+    </h1>
 
     <p>
 
-        Look at the colour of the object.<br><br>
+        Look at the colour of the object.
 
-        Touch and hold the object.<br>
+        <br><br>
 
-        Drag it to the basket with the
-        <b>SAME COLOUR</b>.
+        Touch and hold it.
+
+        <br>
+
+        Drag it into the basket
+        with the <b>SAME COLOUR</b>.
 
     </p>
 
+
     <button id="startButton">
 
-        ▶ START
+        ▶ START GAME
 
     </button>
 
 </div>
 
 
-<!-- =====================================================
-     RESULT
-===================================================== -->
+<!-- ================================
+     RESULT SCREEN
+================================ -->
 
 <div id="resultScreen">
 
-    <h1>🎉 Wonderful!</h1>
+    <h1>
+        🎉 Great Job!
+    </h1>
 
     <div id="finalScore"></div>
 
@@ -800,11 +904,12 @@ body {
 
 <script>
 
+
 /* =====================================================
-   COLOUR DATA
+   DATA
 ===================================================== */
 
-const colourData = {
+const data = {
 
     red: [
         "🍎",
@@ -845,7 +950,7 @@ const colourData = {
 
 
 /* =====================================================
-   GAME VARIABLES
+   VARIABLES
 ===================================================== */
 
 let level = 1;
@@ -860,15 +965,17 @@ let correct = 0;
 
 let objects = [];
 
-let currentObject = null;
+let selectedObject = null;
 
-let offsetX = 0;
+let startX = 0;
 
-let offsetY = 0;
+let startY = 0;
+
+let objectStartLeft = 0;
+
+let objectStartTop = 0;
 
 let dragging = false;
-
-let moveTimer = null;
 
 
 /* =====================================================
@@ -876,38 +983,20 @@ let moveTimer = null;
 ===================================================== */
 
 document
-    .getElementById("startButton")
-    .addEventListener(
-        "touchend",
-        function(event) {
-
-            event.preventDefault();
-
-            startGame();
-
-        }
-    );
-
-
-/* Also allow mouse for testing */
-
-document
-    .getElementById("startButton")
-    .addEventListener(
-        "click",
-        function() {
-
-            startGame();
-
-        }
-    );
+.getElementById("startButton")
+.addEventListener(
+    "click",
+    startGame
+);
 
 
 function startGame() {
 
     document
-        .getElementById("startScreen")
-        .style.display = "none";
+    .getElementById("startScreen")
+    .style.display =
+    "none";
+
 
     level = 1;
 
@@ -919,49 +1008,44 @@ function startGame() {
 
     correct = 0;
 
+
     updateStats();
 
-    createRound();
+    createObjects();
 
 }
 
 
 /* =====================================================
-   CREATE ROUND
+   CREATE OBJECTS
 ===================================================== */
 
-function createRound() {
+function createObjects() {
 
-    const gameArea =
+    const area =
         document.getElementById(
-            "gameArea"
+            "playArea"
         );
 
 
-    /* Clear previous objects */
-
-    gameArea.innerHTML = "";
+    area.innerHTML = "";
 
     objects = [];
 
 
     /*
-       Start with ONLY 4 objects.
-
-       This keeps the screen simple
-       for elderly users.
+       Start with only 5 objects.
+       One for each colour.
     */
 
-    const number =
-        Math.min(
-            4 + level,
-            8
-        );
-
-
     const colours =
-        Object.keys(
-            colourData
+        Object.keys(data);
+
+
+    let number =
+        Math.min(
+            5 + level - 1,
+            8
         );
 
 
@@ -971,17 +1055,20 @@ function createRound() {
         i++
     ) {
 
+
+        /*
+           Guarantee colours are
+           represented initially.
+        */
+
         const colour =
             colours[
-                Math.floor(
-                    Math.random() *
-                    colours.length
-                )
+                i % colours.length
             ];
 
 
         const emojiList =
-            colourData[colour];
+            data[colour];
 
 
         const emoji =
@@ -1000,7 +1087,7 @@ function createRound() {
 
 
         object.className =
-            "gameObject";
+            "object";
 
 
         object.textContent =
@@ -1015,31 +1102,29 @@ function createRound() {
            Random position
         */
 
-        const maxX =
-            gameArea.clientWidth
-            - 85;
+        const areaWidth =
+            area.clientWidth;
 
 
-        const maxY =
-            gameArea.clientHeight
-            - 90;
+        const areaHeight =
+            area.clientHeight;
 
 
         const x =
-            10 +
-            Math.random() *
-            Math.max(
-                20,
-                maxX - 20
-            );
-
-
-        const y =
             20 +
             Math.random() *
             Math.max(
                 20,
-                maxY - 30
+                areaWidth - 110
+            );
+
+
+        const y =
+            30 +
+            Math.random() *
+            Math.max(
+                20,
+                areaHeight - 120
             );
 
 
@@ -1052,22 +1137,33 @@ function createRound() {
 
 
         /*
-           Slow movement
+           TOUCH START
         */
 
-        object.dataset.dx =
-            Math.random() > 0.5
-            ? "0.4"
-            : "-0.4";
+        object.addEventListener(
+            "touchstart",
+            handleTouchStart,
+            {
+                passive: false
+            }
+        );
 
 
-        object.dataset.dy =
-            Math.random() > 0.5
-            ? "0.3"
-            : "-0.3";
+        /*
+           Prevent browser drag
+        */
+
+        object.addEventListener(
+            "dragstart",
+            function(event) {
+
+                event.preventDefault();
+
+            }
+        );
 
 
-        gameArea.appendChild(
+        area.appendChild(
             object
         );
 
@@ -1076,41 +1172,7 @@ function createRound() {
             object
         );
 
-
-        /*
-           TOUCH EVENTS
-        */
-
-        object.addEventListener(
-            "touchstart",
-            touchStart,
-            {
-                passive: false
-            }
-        );
-
-
-        object.addEventListener(
-            "touchmove",
-            touchMove,
-            {
-                passive: false
-            }
-        );
-
-
-        object.addEventListener(
-            "touchend",
-            touchEnd,
-            {
-                passive: false
-            }
-        );
-
     }
-
-
-    startObjectMovement();
 
 }
 
@@ -1119,16 +1181,14 @@ function createRound() {
    TOUCH START
 ===================================================== */
 
-function touchStart(event) {
+function handleTouchStart(event) {
 
     event.preventDefault();
 
     event.stopPropagation();
 
 
-    if(
-        dragging
-    ) {
+    if(dragging) {
         return;
     }
 
@@ -1137,7 +1197,7 @@ function touchStart(event) {
         event.touches[0];
 
 
-    currentObject =
+    selectedObject =
         event.currentTarget;
 
 
@@ -1145,57 +1205,74 @@ function touchStart(event) {
 
 
     /*
-       Freeze object
-    */
-
-    currentObject.dataset.moving =
-        "false";
-
-
-    /*
-       Get object position
+       Save original position
     */
 
     const rect =
-        currentObject.getBoundingClientRect();
+        selectedObject
+        .getBoundingClientRect();
+
+
+    objectStartLeft =
+        rect.left;
+
+
+    objectStartTop =
+        rect.top;
+
+
+    startX =
+        touch.clientX;
+
+
+    startY =
+        touch.clientY;
 
 
     /*
-       Remember exactly where
-       the finger touched.
+       CHANGE TO FIXED POSITION
+
+       This is the important part.
+
+       The object can now move across
+       the entire phone screen,
+       including the basket area.
     */
 
-    offsetX =
-        touch.clientX
-        - rect.left;
-
-
-    offsetY =
-        touch.clientY
-        - rect.top;
-
-
-    currentObject.classList.add(
+    selectedObject.classList.add(
         "dragging"
     );
 
 
+    selectedObject.style.left =
+        touch.clientX + "px";
+
+
+    selectedObject.style.top =
+        touch.clientY + "px";
+
+
     /*
-       Highlight all baskets
+       Add global touch listeners
     */
 
-    document
-        .querySelectorAll(
-            ".basket"
-        )
-        .forEach(
-            basket => {
+    document.addEventListener(
+        "touchmove",
+        handleTouchMove,
+        {
+            passive: false
+        }
+    );
 
-                basket.style.opacity =
-                    "1";
 
-            }
-        );
+    document.addEventListener(
+        "touchend",
+        handleTouchEnd,
+        {
+            passive: false,
+            once: true
+        }
+    );
 
 }
 
@@ -1204,18 +1281,18 @@ function touchStart(event) {
    TOUCH MOVE
 ===================================================== */
 
-function touchMove(event) {
+function handleTouchMove(event) {
 
     event.preventDefault();
-
-    event.stopPropagation();
 
 
     if(
         !dragging ||
-        !currentObject
+        !selectedObject
     ) {
+
         return;
+
     }
 
 
@@ -1223,79 +1300,57 @@ function touchMove(event) {
         event.touches[0];
 
 
-    const gameArea =
-        document.getElementById(
-            "gameArea"
-        );
+    /*
+       Move object using finger
+    */
+
+    selectedObject.style.left =
+        touch.clientX + "px";
 
 
-    const areaRect =
-        gameArea.getBoundingClientRect();
+    selectedObject.style.top =
+        touch.clientY + "px";
 
 
     /*
-       Calculate new position
+       Find basket below finger
     */
 
-    let x =
-        touch.clientX
-        - areaRect.left
-        - offsetX;
-
-
-    let y =
-        touch.clientY
-        - areaRect.top
-        - offsetY;
-
-
-    /*
-       Keep object on screen
-    */
-
-    const maxX =
-        gameArea.clientWidth
-        - currentObject.offsetWidth;
-
-
-    const maxY =
-        gameArea.clientHeight
-        - currentObject.offsetHeight;
-
-
-    x =
-        Math.max(
-            0,
-            Math.min(
-                x,
-                maxX
-            )
+    const basket =
+        findBasketAtPoint(
+            touch.clientX,
+            touch.clientY
         );
 
 
-    y =
-        Math.max(
-            0,
-            Math.min(
-                y,
-                maxY
-            )
-        );
+    /*
+       Remove previous highlights
+    */
 
+    document
+    .querySelectorAll(".basket")
+    .forEach(
+        b => {
 
-    currentObject.style.left =
-        x + "px";
+            b.classList.remove(
+                "highlight"
+            );
 
-
-    currentObject.style.top =
-        y + "px";
+        }
+    );
 
 
     /*
-       Find basket underneath
+       Highlight current basket
     */
 
-    highlightBasket();
+    if(basket) {
+
+        basket.classList.add(
+            "highlight"
+        );
+
+    }
 
 }
 
@@ -1304,200 +1359,85 @@ function touchMove(event) {
    TOUCH END
 ===================================================== */
 
-function touchEnd(event) {
+function handleTouchEnd(event) {
 
     event.preventDefault();
-
-    event.stopPropagation();
 
 
     if(
         !dragging ||
-        !currentObject
+        !selectedObject
     ) {
+
         return;
+
     }
 
 
+    const touch =
+        event.changedTouches[0];
+
+
     const object =
-        currentObject;
+        selectedObject;
 
 
     /*
-       Check basket BEFORE
-       clearing currentObject
+       Find basket at release point
     */
 
     const basket =
-        findBasket(object);
+        findBasketAtPoint(
+            touch.clientX,
+            touch.clientY
+        );
 
 
-    dragging = false;
+    /*
+       Remove listeners
+    */
 
-    currentObject = null;
-
-
-    object.classList.remove(
-        "dragging"
+    document.removeEventListener(
+        "touchmove",
+        handleTouchMove
     );
 
 
     /*
-       Remove basket highlights
+       Remove highlight
     */
 
     document
-        .querySelectorAll(
-            ".basket"
-        )
-        .forEach(
-            basket => {
+    .querySelectorAll(".basket")
+    .forEach(
+        b => {
 
-                basket.classList.remove(
-                    "target"
-                );
+            b.classList.remove(
+                "highlight"
+            );
 
-            }
-        );
+        }
+    );
+
+
+    dragging = false;
+
+    selectedObject = null;
 
 
     /*
-       Check answer
+       Check result
     */
 
-    if(basket) {
+    if(!basket) {
 
-        checkAnswer(
-            object,
-            basket
-        );
-
-    } else {
-
-        returnObject(
+        returnToOriginal(
             object
         );
 
-    }
-
-}
-
-
-/* =====================================================
-   FIND BASKET
-===================================================== */
-
-function findBasket(object) {
-
-    const objectRect =
-        object.getBoundingClientRect();
-
-
-    /*
-       Use CENTER of object
-    */
-
-    const centerX =
-        objectRect.left
-        + objectRect.width / 2;
-
-
-    const centerY =
-        objectRect.top
-        + objectRect.height / 2;
-
-
-    const baskets =
-        document.querySelectorAll(
-            ".basket"
-        );
-
-
-    for(
-        const basket of baskets
-    ) {
-
-        const rect =
-            basket.getBoundingClientRect();
-
-
-        if(
-
-            centerX >= rect.left &&
-
-            centerX <= rect.right &&
-
-            centerY >= rect.top &&
-
-            centerY <= rect.bottom
-
-        ) {
-
-            return basket;
-
-        }
-
-    }
-
-
-    return null;
-
-}
-
-
-/* =====================================================
-   HIGHLIGHT BASKET
-===================================================== */
-
-function highlightBasket() {
-
-    if(!currentObject) {
         return;
-    }
-
-
-    const basket =
-        findBasket(
-            currentObject
-        );
-
-
-    document
-        .querySelectorAll(
-            ".basket"
-        )
-        .forEach(
-            b => {
-
-                b.classList.remove(
-                    "target"
-                );
-
-            }
-        );
-
-
-    if(basket) {
-
-        basket.classList.add(
-            "target"
-        );
 
     }
-
-}
-
-
-/* =====================================================
-   CHECK ANSWER
-===================================================== */
-
-function checkAnswer(
-    object,
-    basket
-) {
-
-    attempts++;
 
 
     const objectColour =
@@ -1506,6 +1446,9 @@ function checkAnswer(
 
     const basketColour =
         basket.dataset.color;
+
+
+    attempts++;
 
 
     /*
@@ -1534,37 +1477,34 @@ function checkAnswer(
 
 
         /*
-           Make basket pulse
+           SNAP INTO BASKET
         */
 
-        basket.classList.add(
-            "target"
-        );
+        const rect =
+            basket.getBoundingClientRect();
 
 
-        setTimeout(
-            function() {
+        object.style.left =
+            (
+                rect.left +
+                rect.width / 2
+            ) + "px";
 
-                basket.classList.remove(
-                    "target"
-                );
 
-            },
-            400
-        );
+        object.style.top =
+            (
+                rect.top +
+                rect.height / 2
+            ) + "px";
+
+
+        object.style.transform =
+            "translate(-50%, -50%) scale(0.7)";
 
 
         /*
-           Object disappears
+           Disappear
         */
-
-        object.style.transform =
-            "scale(0)";
-
-
-        object.style.opacity =
-            "0";
-
 
         setTimeout(
             function() {
@@ -1574,12 +1514,13 @@ function checkAnswer(
 
                 objects =
                     objects.filter(
-                        o => o !== object
+                        o =>
+                        o !== object
                     );
 
 
                 /*
-                   If round completed
+                   Round complete
                 */
 
                 if(
@@ -1588,16 +1529,17 @@ function checkAnswer(
 
                     setTimeout(
                         nextLevel,
-                        700
+                        800
                     );
 
                 }
 
             },
-            300
+            450
         );
 
     }
+
 
     /*
        WRONG
@@ -1616,16 +1558,12 @@ function checkAnswer(
 
 
         showFeedback(
-            "❌ Try another basket",
+            "❌ Wrong basket",
             false
         );
 
 
-        /*
-           Return object
-        */
-
-        returnObject(
+        returnToOriginal(
             object
         );
 
@@ -1635,43 +1573,88 @@ function checkAnswer(
 
 
 /* =====================================================
+   FIND BASKET AT SCREEN POINT
+===================================================== */
+
+function findBasketAtPoint(
+    x,
+    y
+) {
+
+    const baskets =
+        document.querySelectorAll(
+            ".basket"
+        );
+
+
+    for(
+        const basket of baskets
+    ) {
+
+        const rect =
+            basket.getBoundingClientRect();
+
+
+        if(
+
+            x >= rect.left &&
+
+            x <= rect.right &&
+
+            y >= rect.top &&
+
+            y <= rect.bottom
+
+        ) {
+
+            return basket;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =====================================================
    RETURN OBJECT
 ===================================================== */
 
-function returnObject(object) {
+function returnToOriginal(
+    object
+) {
 
-    const gameArea =
+    /*
+       Convert fixed screen position
+       back into play-area position.
+    */
+
+    object.classList.remove(
+        "dragging"
+    );
+
+
+    const playArea =
         document.getElementById(
-            "gameArea"
+            "playArea"
         );
 
 
-    const maxX =
-        gameArea.clientWidth
-        - object.offsetWidth;
-
-
-    const maxY =
-        gameArea.clientHeight
-        - object.offsetHeight;
+    const areaRect =
+        playArea.getBoundingClientRect();
 
 
     const x =
-        10 +
-        Math.random() *
-        Math.max(
-            20,
-            maxX - 20
-        );
+        objectStartLeft -
+        areaRect.left;
 
 
     const y =
-        20 +
-        Math.random() *
-        Math.max(
-            20,
-            maxY - 30
-        );
+        objectStartTop -
+        areaRect.top;
 
 
     object.style.left =
@@ -1685,132 +1668,6 @@ function returnObject(object) {
     object.style.transform =
         "scale(1)";
 
-
-    object.style.opacity =
-        "1";
-
-}
-
-
-/* =====================================================
-   OBJECT MOVEMENT
-===================================================== */
-
-function startObjectMovement() {
-
-    clearInterval(
-        moveTimer
-    );
-
-
-    moveTimer =
-        setInterval(
-            function() {
-
-                if(dragging) {
-                    return;
-                }
-
-
-                const gameArea =
-                    document.getElementById(
-                        "gameArea"
-                    );
-
-
-                objects.forEach(
-                    object => {
-
-                        if(
-                            !document.body.contains(
-                                object
-                            )
-                        ) {
-                            return;
-                        }
-
-
-                        let x =
-                            parseFloat(
-                                object.style.left
-                            );
-
-
-                        let y =
-                            parseFloat(
-                                object.style.top
-                            );
-
-
-                        let dx =
-                            parseFloat(
-                                object.dataset.dx
-                            );
-
-
-                        let dy =
-                            parseFloat(
-                                object.dataset.dy
-                            );
-
-
-                        x += dx;
-
-                        y += dy;
-
-
-                        const maxX =
-                            gameArea.clientWidth
-                            - object.offsetWidth;
-
-
-                        const maxY =
-                            gameArea.clientHeight
-                            - object.offsetHeight;
-
-
-                        if(
-                            x <= 0 ||
-                            x >= maxX
-                        ) {
-
-                            dx *= -1;
-
-                        }
-
-
-                        if(
-                            y <= 20 ||
-                            y >= maxY
-                        ) {
-
-                            dy *= -1;
-
-                        }
-
-
-                        object.dataset.dx =
-                            dx;
-
-
-                        object.dataset.dy =
-                            dy;
-
-
-                        object.style.left =
-                            x + "px";
-
-
-                        object.style.top =
-                            y + "px";
-
-                    }
-                );
-
-            },
-            30
-        );
-
 }
 
 
@@ -1820,7 +1677,7 @@ function startObjectMovement() {
 
 function showFeedback(
     text,
-    correctAnswer
+    isCorrect
 ) {
 
     const feedback =
@@ -1834,9 +1691,9 @@ function showFeedback(
 
 
     feedback.className =
-        correctAnswer
-        ? "correctFeedback feedbackShow"
-        : "wrongFeedback feedbackShow";
+        isCorrect
+        ? "correct show"
+        : "wrong show";
 
 
     setTimeout(
@@ -1879,10 +1736,9 @@ function updateStats() {
         attempts === 0
         ? 100
         : Math.round(
-            (
-                correct /
-                attempts
-            ) * 100
+            correct /
+            attempts *
+            100
         );
 
 
@@ -1913,7 +1769,7 @@ function nextLevel() {
 
     updateStats();
 
-    createRound();
+    createObjects();
 
 }
 
@@ -1923,11 +1779,6 @@ function nextLevel() {
 ===================================================== */
 
 function endGame() {
-
-    clearInterval(
-        moveTimer
-    );
-
 
     document.getElementById(
         "finalScore"
@@ -1939,10 +1790,9 @@ function endGame() {
         attempts === 0
         ? 100
         : Math.round(
-            (
-                correct /
-                attempts
-            ) * 100
+            correct /
+            attempts *
+            100
         );
 
 
@@ -1973,26 +1823,26 @@ function endGame() {
 ===================================================== */
 
 document
-    .getElementById("restartButton")
-    .addEventListener(
-        "touchend",
-        function(event) {
+.getElementById("restartButton")
+.addEventListener(
+    "click",
+    function() {
 
-            event.preventDefault();
+        document
+        .getElementById(
+            "resultScreen"
+        )
+        .style.display =
+        "none";
 
-            document
-                .getElementById(
-                    "resultScreen"
-                )
-                .style.display =
-                "none";
 
-            startGame();
+        startGame();
 
-        }
-    );
+    }
+);
 
 </script>
 
 </body>
+
 </html>
